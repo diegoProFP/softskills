@@ -1,3 +1,10 @@
 moodle:
   base-url: https://aulavirtual33.educa.madrid.org/ies.garciamarquez.leganes
   service: moodle_mobile_app
+
+jwt:
+  secret: mi_clave_super_secreta_para_firmar
+  expiration: 3600000
+  header: Authorization
+  prefix: Bearer
+  uri: /auth/**

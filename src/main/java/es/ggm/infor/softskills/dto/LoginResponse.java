@@ -10,9 +10,8 @@ import lombok.*;
 @ToString
 public class LoginResponse {
 
-    String token;
+    String tokenJwt;
     SiteInfoResponse datosUsuario;
-
     boolean exito;
     String mensaje;
 }
