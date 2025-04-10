@@ -1,34 +1,18 @@
 package es.ggm.infor.softskills.dto;
 
+import es.ggm.infor.moodleintegration.dto.SiteInfoResponse;
+import lombok.*;
+
+@Data // Incluye getters, setters, toString, equals y hashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString
 public class LoginResponse {
 
-    private String token;
-    private boolean exito;
-    private String mensaje;
+    String token;
+    SiteInfoResponse datosUsuario;
 
-
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public boolean isExito() {
-        return exito;
-    }
-
-    public void setExito(boolean exito) {
-        this.exito = exito;
-    }
-
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
+    boolean exito;
+    String mensaje;
 }
