@@ -1,0 +1,3 @@
+moodle:
+  base-url: https://aulavirtual33.educa.madrid.org/ies.garciamarquez.leganes
+  service: moodle_mobile_app
