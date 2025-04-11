@@ -46,7 +46,7 @@ public class AuthController {
             );
 
             String moodleToken = authentication.getName();
-            UsuarioDTO userInfo = moodleClient.getUserInfo(authentication.getName());
+            UsuarioDTO userInfo = (UsuarioDTO) authentication.getDetails();
 
             String token = JwtUtils.generateToken(authentication, userInfo, secretKey);
             return "Bearer " + token;
