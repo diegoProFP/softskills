@@ -2,6 +2,7 @@ package es.ggm.infor.softskills.security;
 
 import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.MoodleLoginResponse;
+import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,18 +27,21 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        // Aquí llamas a tu API externa (por ejemplo, RESTTemplate, WebClient...)
-
-        MoodleLoginResponse loginResponse = moodleClient.login(username, password);
-
-        if(loginResponse == null) {
-            throw new BadCredentialsException("Credenciales incorrectas en Moodle");
+        MoodleLoginResponse loginResponse = null;
+        try {
+            loginResponse = moodleClient.login(username, password);
+            if (loginResponse.token == null) {
+                throw new BadCredentialsException("Credenciales incorrectas en Moodle");
+            }
+        } catch (GeneralMoodleException e) {
+            throw new RuntimeException(e);
         }
 
+        //TODO: pendiente de saber cómo podemos ponerle el rol de profesor o de alumno. Idea: consultar el userId en BD para ver si es profesor o alumno
+        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_TEACHER"));
+        UsernamePasswordAuthenticationToken tokenAuth = new UsernamePasswordAuthenticationToken(loginResponse.token, null, authorities);
 
-        // Si es válido, creas el Authentication con roles, etc.
-        List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UsernamePasswordAuthenticationToken(loginResponse.token, null, authorities);
+        return tokenAuth;
     }
 
     @Override
@@ -45,10 +49,5 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    private boolean moodleApiValida(String user, String pass) {
 
-        MoodleLoginResponse loginResponse = moodleClient.login(user, pass);
-        // Aquí va tu llamada real a Moodle (esto es solo un mock)
-        return "admin".equals(user) && "admin".equals(pass);
-    }
 }

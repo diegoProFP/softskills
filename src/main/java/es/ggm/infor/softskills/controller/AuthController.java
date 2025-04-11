@@ -2,6 +2,8 @@ package es.ggm.infor.softskills.controller;
 
 
 import es.ggm.infor.moodleintegration.client.MoodleClient;
+import es.ggm.infor.moodleintegration.dto.SiteInfoResponse;
+import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
 import es.ggm.infor.softskills.dto.LoginRequest;
 import es.ggm.infor.softskills.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,11 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
-            String token = JwtUtils.generateToken(authentication, secretKey);
+
+            String moodleToken = authentication.getName();
+            UsuarioDTO userInfo = moodleClient.getUserInfo(authentication.getName());
+
+            String token = JwtUtils.generateToken(authentication, userInfo, secretKey);
             return "Bearer " + token;
         } catch (AuthenticationException e) {
             return "Error en login: " + e.getMessage();
