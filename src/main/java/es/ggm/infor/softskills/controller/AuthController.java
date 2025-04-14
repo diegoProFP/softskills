@@ -21,8 +21,8 @@ import javax.crypto.SecretKey;
 
 
 @RestController
-@RequestMapping("/api")
-public class AuthController {
+@RequestMapping(MainController.BASE_PATH + "/auth")
+public class AuthController extends MainController{
 
 
     private final MoodleClient moodleClient;

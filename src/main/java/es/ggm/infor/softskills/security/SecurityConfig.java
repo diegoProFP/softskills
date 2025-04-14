@@ -1,6 +1,7 @@
 package es.ggm.infor.softskills.security;
 
 import es.ggm.infor.moodleintegration.client.MoodleClient;
+import es.ggm.infor.softskills.controller.MainController;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/user").hasRole("USER")
-                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers(MainController.BASE_PATH +"/auth/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf().disable()
