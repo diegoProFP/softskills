@@ -29,11 +29,11 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         MoodleLoginResponse loginResponse = null;
-        UsuarioDTO userInfo;
+            UsuarioDTO userInfo;
         try {
             loginResponse = new MoodleLoginResponse();//moodleClient.login(username, password);
             loginResponse.token = "4b147711a37fd20806ea0a3b90f179b7";
-             userInfo = moodleClient.getUserInfo(loginResponse.token);
+            userInfo = moodleClient.getUserInfo(loginResponse.token);
             if (loginResponse.token == null) {
                 throw new BadCredentialsException("Credenciales incorrectas en Moodle");
             }
@@ -48,7 +48,6 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
         } catch (GeneralMoodleException e) {
             throw new RuntimeException(e);
         }
-
 
 
     }

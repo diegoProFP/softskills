@@ -1,6 +1,7 @@
 package es.ggm.infor.softskills.security;
 
 import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.Authentication;
 
@@ -11,6 +12,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JwtUtils {
+
+    private static final String CLAIM_USUARIO_USERID = "userid";
+    private static final String CLAIM_USUARIO_USERNAME = "username";
+    private static final String CLAIM_USUARIO_FIRSTNAME = "firstname";
+    private static final String CLAIM_USUARIO_LASTNAME = "lastname";
+    private static final String CLAIM_USUARIO_FULLNAME = "fullname";
+    private static final String CLAIM_USUARIO_LANG = "lang";
+    private static final String CLAIM_USUARIO_SITENAME = "sitename";
+    private static final String CLAIM_USUARIO_SITEURL = "siteurl";
+    private static final String CLAIM_USUARIO_USERPICTUREURL = "userPictureUrl";
+
 
     public static String generateToken(Authentication authentication, UsuarioDTO userInfo, SecretKey secretKey) {
         List<String> roles = authentication.getAuthorities().stream()
@@ -28,17 +40,34 @@ public class JwtUtils {
                 .compact();
     }
 
+
     private static Map<String, Object> convertUserInfoToClaims(UsuarioDTO userInfo) {
         return Map.of(
-                "userid", userInfo.getUserid(),
-                "username", userInfo.getUsername(),
-                "firstname", userInfo.getFirstname(),
-                "lastname", userInfo.getLastname(),
-                "fullname", userInfo.getFullname(),
-                "lang", userInfo.getLang(),
-                "sitename", userInfo.getSitename(),
-                "siteurl", userInfo.getSiteurl(),
-                "userPictureUrl", userInfo.getUserPictureUrl()
+                CLAIM_USUARIO_USERID, userInfo.getUserid(),
+                CLAIM_USUARIO_USERNAME, userInfo.getUsername(),
+                CLAIM_USUARIO_FIRSTNAME, userInfo.getFirstname(),
+                CLAIM_USUARIO_LASTNAME, userInfo.getLastname(),
+                CLAIM_USUARIO_FULLNAME, userInfo.getFullname(),
+                CLAIM_USUARIO_LANG, userInfo.getLang(),
+                CLAIM_USUARIO_SITENAME, userInfo.getSitename(),
+                CLAIM_USUARIO_SITEURL, userInfo.getSiteurl(),
+                CLAIM_USUARIO_USERPICTUREURL, userInfo.getUserPictureUrl()
         );
     }
+
+    public static UsuarioDTO convertClaimsToUserInfo(Claims claims) {
+        UsuarioDTO userInfo = new UsuarioDTO();
+        userInfo.setUserid(claims.get(CLAIM_USUARIO_USERID, Long.class));
+        userInfo.setUsername(claims.get(CLAIM_USUARIO_USERNAME, String.class));
+        userInfo.setFirstname(claims.get(CLAIM_USUARIO_FIRSTNAME, String.class));
+        userInfo.setLastname(claims.get(CLAIM_USUARIO_LASTNAME, String.class));
+        userInfo.setFullname(claims.get(CLAIM_USUARIO_FULLNAME, String.class));
+        userInfo.setLang(claims.get(CLAIM_USUARIO_LANG, String.class));
+        userInfo.setSitename(claims.get(CLAIM_USUARIO_SITENAME, String.class));
+        userInfo.setSiteurl(claims.get(CLAIM_USUARIO_SITEURL, String.class));
+        userInfo.setUserPictureUrl(claims.get(CLAIM_USUARIO_USERPICTUREURL, String.class));
+        return userInfo;
+    }
+
+
 }

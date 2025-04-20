@@ -5,6 +5,7 @@ import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.SiteInfoResponse;
 import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
 import es.ggm.infor.softskills.dto.LoginRequest;
+import es.ggm.infor.softskills.dto.LoginResponse;
 import es.ggm.infor.softskills.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class AuthController extends MainController{
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
+    ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
 
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -49,9 +50,13 @@ public class AuthController extends MainController{
             UsuarioDTO userInfo = (UsuarioDTO) authentication.getDetails();
 
             String token = JwtUtils.generateToken(authentication, userInfo, secretKey);
-            return "Bearer " + token;
+
+
+            LoginResponse respuestaLogin = LoginResponse.builder().token(token).datosUsuario(userInfo).exito(true).build();
+            return ResponseEntity.ok(respuestaLogin);
         } catch (AuthenticationException e) {
-            return "Error en login: " + e.getMessage();
+            LoginResponse respuestaLogin = LoginResponse.builder().exito(false).mensaje("Error en login: " + e.getMessage()).build();
+            return ResponseEntity.badRequest().body(respuestaLogin);
         }
     }
 }

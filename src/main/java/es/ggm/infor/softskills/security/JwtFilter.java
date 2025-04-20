@@ -1,5 +1,6 @@
 package es.ggm.infor.softskills.security;
 
+import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -42,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        String username = claims.getSubject(); // clásico
+        String username = claims.getSubject(); //
         List<String> roles = claims.get("roles", List.class); // si metiste los roles como lista
         Date exp = claims.getExpiration();
         if (exp.before(new Date())) {
@@ -66,6 +67,10 @@ public class JwtFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(username, null, authorities);
 
+        // Aquí puedes agregar el objeto UsuarioDTO a los atributos de la solicitud
+        UsuarioDTO userInfo = JwtUtils.convertClaimsToUserInfo(claims);
+        userInfo.setMoodleToken(username);
+        auth.setDetails(userInfo);
 
         SecurityContextHolder.getContext().setAuthentication(auth);
 
