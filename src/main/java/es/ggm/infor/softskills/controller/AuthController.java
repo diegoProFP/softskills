@@ -1,6 +1,7 @@
 package es.ggm.infor.softskills.controller;
 
 
+import es.ggm.infor.moodleintegration.client.IMoodleClient;
 import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.SiteInfoResponse;
 import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
@@ -26,14 +27,14 @@ import javax.crypto.SecretKey;
 public class AuthController extends MainController{
 
 
-    private final MoodleClient moodleClient;
+    private final IMoodleClient moodleClient;
 
     @Autowired
     private SecretKey secretKey;
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthController(MoodleClient moodleClient, AuthenticationManager authenticationManager) {
+    public AuthController(IMoodleClient moodleClient, AuthenticationManager authenticationManager) {
         this.moodleClient = moodleClient;
         this.authenticationManager = authenticationManager;
     }

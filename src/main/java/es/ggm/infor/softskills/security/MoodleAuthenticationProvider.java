@@ -1,5 +1,6 @@
 package es.ggm.infor.softskills.security;
 
+import es.ggm.infor.moodleintegration.client.IMoodleClient;
 import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.MoodleLoginResponse;
 import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
@@ -17,9 +18,9 @@ import java.util.List;
 @Component
 public class MoodleAuthenticationProvider implements AuthenticationProvider {
 
-    private final MoodleClient moodleClient;
+    private final IMoodleClient moodleClient;
 
-    public MoodleAuthenticationProvider(MoodleClient moodleClient) {
+    public MoodleAuthenticationProvider(IMoodleClient moodleClient) {
         this.moodleClient = moodleClient;
     }
 
@@ -31,8 +32,8 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
         MoodleLoginResponse loginResponse = null;
             UsuarioDTO userInfo;
         try {
-            loginResponse = new MoodleLoginResponse();//moodleClient.login(username, password);
-            loginResponse.token = "4b147711a37fd20806ea0a3b90f179b7";
+            loginResponse = moodleClient.login(username, password);
+         //   loginResponse.token = "4b147711a37fd20806ea0a3b90f179b7";
             userInfo = moodleClient.getUserInfo(loginResponse.token);
             if (loginResponse.token == null) {
                 throw new BadCredentialsException("Credenciales incorrectas en Moodle");
