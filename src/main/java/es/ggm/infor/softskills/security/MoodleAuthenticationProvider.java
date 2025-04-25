@@ -36,7 +36,7 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
          //   loginResponse.token = "4b147711a37fd20806ea0a3b90f179b7";
             userInfo = moodleClient.getUserInfo(loginResponse.token);
             if (loginResponse.token == null) {
-                throw new BadCredentialsException("Credenciales incorrectas en Moodle");
+                throw new BadCredentialsException("Credenciales incorrectas en Moodle: " + username + ", " + password);
             }
 
             //TODO: pendiente de saber cómo podemos ponerle el rol de profesor o de alumno. Idea: consultar el userId en BD para ver si es profesor o alumno

@@ -5,6 +5,8 @@ import es.ggm.infor.moodleintegration.dto.CursoDTO;
 import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping(MainController.BASE_PATH + "/cursos")
 public class CursosController extends MainController {
+
+    private static final Logger logger = LoggerFactory.getLogger(CursosController.class);
 
 
     private final MoodleClient moodleClient;
@@ -43,7 +47,9 @@ public class CursosController extends MainController {
             cursos = moodleClient.getCursos(token, usuario.getUserid());
             return ResponseEntity.ok(cursos);
         } catch (GeneralMoodleException e) {
+            logger.error("Error al obtener los cursos del usuario: {}", e.getMessage());
             return ResponseEntity.internalServerError().body("Error al obtener los cursos: " + e.getMessage());
+
         }
 
     }

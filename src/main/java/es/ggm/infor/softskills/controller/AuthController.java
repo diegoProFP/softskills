@@ -8,6 +8,8 @@ import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
 import es.ggm.infor.softskills.dto.LoginRequest;
 import es.ggm.infor.softskills.dto.LoginResponse;
 import es.ggm.infor.softskills.security.JwtUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +27,8 @@ import javax.crypto.SecretKey;
 @RestController
 @RequestMapping(MainController.BASE_PATH + "/auth")
 public class AuthController extends MainController{
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
 
     private final IMoodleClient moodleClient;
@@ -54,9 +58,12 @@ public class AuthController extends MainController{
 
 
             LoginResponse respuestaLogin = LoginResponse.builder().token(token).datosUsuario(userInfo).exito(true).build();
+
+            logger.info("Usuario logado: " + userInfo.getFullname() + "| Token: " + token);
             return ResponseEntity.ok(respuestaLogin);
         } catch (AuthenticationException e) {
             LoginResponse respuestaLogin = LoginResponse.builder().exito(false).mensaje("Error en login: " + e.getMessage()).build();
+            logger.error("Error en login: " + e.getMessage());
             return ResponseEntity.badRequest().body(respuestaLogin);
         }
     }
