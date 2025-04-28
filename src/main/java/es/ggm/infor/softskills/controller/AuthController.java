@@ -4,7 +4,7 @@ package es.ggm.infor.softskills.controller;
 import es.ggm.infor.moodleintegration.client.IMoodleClient;
 import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.SiteInfoResponse;
-import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
+import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.softskills.dto.LoginRequest;
 import es.ggm.infor.softskills.dto.LoginResponse;
 import es.ggm.infor.softskills.security.JwtUtils;
@@ -52,7 +52,7 @@ public class AuthController extends MainController{
             );
 
             String moodleToken = authentication.getName();
-            UsuarioDTO userInfo = (UsuarioDTO) authentication.getDetails();
+            UsuarioMoodleDTO userInfo = (UsuarioMoodleDTO) authentication.getDetails();
 
             String token = JwtUtils.generateToken(authentication, userInfo, secretKey);
 

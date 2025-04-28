@@ -2,7 +2,9 @@ package es.ggm.infor.softskills.controller;
 
 import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.CursoDTO;
+import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
 import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
+import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
 import org.slf4j.Logger;
@@ -39,9 +41,9 @@ public class CursosController extends MainController {
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> getCursosUsuario() {
        
-        List<CursoDTO> cursos = null;
+        List<CursoMoodleDTO> cursos = null;
         try {
-            UsuarioDTO usuario = authenticatedUserService.getAuthenticatedUser();
+            UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
             String token = authenticatedUserService.getAuthenticatedToken();
 
             cursos = moodleClient.getCursos(token, usuario.getUserid());

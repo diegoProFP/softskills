@@ -1,7 +1,6 @@
 package es.ggm.infor.softskills.dto;
 
-import es.ggm.infor.moodleintegration.dto.SiteInfoResponse;
-import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
+import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import lombok.*;
 
 @Data // Incluye getters, setters, toString, equals y hashCode
@@ -12,7 +11,7 @@ import lombok.*;
 public class LoginResponse {
 
     String token;
-    UsuarioDTO datosUsuario;
+    UsuarioMoodleDTO datosUsuario;
     boolean exito;
     String mensaje;
 }

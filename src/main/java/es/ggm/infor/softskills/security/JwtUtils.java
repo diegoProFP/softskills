@@ -1,6 +1,6 @@
 package es.ggm.infor.softskills.security;
 
-import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
+import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.Authentication;
@@ -24,7 +24,7 @@ public class JwtUtils {
     private static final String CLAIM_USUARIO_USERPICTUREURL = "userPictureUrl";
 
 
-    public static String generateToken(Authentication authentication, UsuarioDTO userInfo, SecretKey secretKey) {
+    public static String generateToken(Authentication authentication, UsuarioMoodleDTO userInfo, SecretKey secretKey) {
         List<String> roles = authentication.getAuthorities().stream()
                 .map(authority -> authority.getAuthority())
                 .collect(Collectors.toList());
@@ -41,7 +41,7 @@ public class JwtUtils {
     }
 
 
-    private static Map<String, Object> convertUserInfoToClaims(UsuarioDTO userInfo) {
+    private static Map<String, Object> convertUserInfoToClaims(UsuarioMoodleDTO userInfo) {
         return Map.of(
                 CLAIM_USUARIO_USERID, userInfo.getUserid(),
                 CLAIM_USUARIO_USERNAME, userInfo.getUsername(),
@@ -55,8 +55,8 @@ public class JwtUtils {
         );
     }
 
-    public static UsuarioDTO convertClaimsToUserInfo(Claims claims) {
-        UsuarioDTO userInfo = new UsuarioDTO();
+    public static UsuarioMoodleDTO convertClaimsToUserInfo(Claims claims) {
+        UsuarioMoodleDTO userInfo = new UsuarioMoodleDTO();
         userInfo.setUserid(claims.get(CLAIM_USUARIO_USERID, Long.class));
         userInfo.setUsername(claims.get(CLAIM_USUARIO_USERNAME, String.class));
         userInfo.setFirstname(claims.get(CLAIM_USUARIO_FIRSTNAME, String.class));
