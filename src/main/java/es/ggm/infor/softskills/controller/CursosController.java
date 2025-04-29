@@ -1,9 +1,7 @@
 package es.ggm.infor.softskills.controller;
 
 import es.ggm.infor.moodleintegration.client.MoodleClient;
-import es.ggm.infor.moodleintegration.dto.CursoDTO;
 import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
-import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;

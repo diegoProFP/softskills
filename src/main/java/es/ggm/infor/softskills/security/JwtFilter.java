@@ -1,6 +1,6 @@
 package es.ggm.infor.softskills.security;
 
-import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
+import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
@@ -68,7 +68,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 new UsernamePasswordAuthenticationToken(username, null, authorities);
 
         // Aquí puedes agregar el objeto UsuarioDTO a los atributos de la solicitud
-        UsuarioDTO userInfo = JwtUtils.convertClaimsToUserInfo(claims);
+        UsuarioMoodleDTO userInfo = JwtUtils.convertClaimsToUserInfo(claims);
         userInfo.setMoodleToken(username);
         auth.setDetails(userInfo);
 

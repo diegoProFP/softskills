@@ -3,7 +3,7 @@ package es.ggm.infor.softskills.security;
 import es.ggm.infor.moodleintegration.client.IMoodleClient;
 import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.MoodleLoginResponse;
-import es.ggm.infor.moodleintegration.dto.UsuarioDTO;
+import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,7 +30,7 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
 
         MoodleLoginResponse loginResponse = null;
-            UsuarioDTO userInfo;
+            UsuarioMoodleDTO userInfo;
         try {
             loginResponse = moodleClient.login(username, password);
          //   loginResponse.token = "4b147711a37fd20806ea0a3b90f179b7";
