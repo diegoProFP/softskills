@@ -16,13 +16,21 @@ import java.time.LocalDateTime;
 public class Curso {
 
     @Id
-    Long id;
+    @Column(name = "ID")
+    private Long id;
 
-    @Column(name = "NOMBRE", nullable = false, unique = true)
-    private String nombre;
+    @ManyToOne
+    @JoinColumn(name = "PROFESOR_ID")
+    private Profesor profesor;
 
-    @Column(name ="NOMBRE_CORTO")
+    @Transient
     private String nombreCorto;
+
+    @Transient
+    private String nombreLargo;
+
+    @Transient
+    private String nombreVisible;
 
     @Transient
     private boolean registradoSk;

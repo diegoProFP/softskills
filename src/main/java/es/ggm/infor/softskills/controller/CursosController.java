@@ -4,7 +4,10 @@ import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
+import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
+import es.ggm.infor.softskills.service.CursoService;
+import es.ggm.infor.softskills.service.ICursoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +30,14 @@ public class CursosController extends MainController {
 
     private final MoodleClient moodleClient;
 
+    private final ICursoService cursoService;
+
     private final AuthenticatedUserService authenticatedUserService;
 
 
-    public CursosController(MoodleClient moodleClient, AuthenticatedUserService authenticatedUserService) {
+    public CursosController(MoodleClient moodleClient, ICursoService cursoService, AuthenticatedUserService authenticatedUserService) {
         this.moodleClient = moodleClient;
+        this.cursoService = cursoService;
         this.authenticatedUserService = authenticatedUserService;
     }
 
@@ -40,13 +46,15 @@ public class CursosController extends MainController {
     public ResponseEntity<?> getCursosUsuario() {
        
         List<CursoMoodleDTO> cursos = null;
+        List<Curso> cursosDelProfesor = null;
         try {
             UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
             String token = authenticatedUserService.getAuthenticatedToken();
 
-            cursos = moodleClient.getCursos(token, usuario.getUserid());
-            return ResponseEntity.ok(cursos);
-        } catch (GeneralMoodleException e) {
+            cursosDelProfesor = cursoService.getCursosDelProfesor(token, usuario.getUserid());
+
+            return ResponseEntity.ok(cursosDelProfesor);
+        } catch (Exception e) {
             logger.error("Error al obtener los cursos del usuario: {}", e.getMessage());
             return ResponseEntity.internalServerError().body("Error al obtener los cursos: " + e.getMessage());
 
