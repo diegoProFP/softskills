@@ -7,6 +7,9 @@ import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "PROFESOR")
+@Data
+@AllArgsConstructor
 @SuperBuilder
+@ToString
 public class Profesor extends Usuario{
 }
