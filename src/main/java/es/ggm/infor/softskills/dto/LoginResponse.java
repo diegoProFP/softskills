@@ -14,4 +14,6 @@ public class LoginResponse {
     UsuarioMoodleDTO datosUsuario;
     boolean exito;
     String mensaje;
+
+
 }

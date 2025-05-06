@@ -7,6 +7,7 @@ import es.ggm.infor.moodleintegration.dto.SiteInfoResponse;
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.softskills.dto.LoginRequest;
 import es.ggm.infor.softskills.dto.LoginResponse;
+import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.security.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +64,7 @@ public class AuthController extends MainController{
             return ResponseEntity.ok(respuestaLogin);
         } catch (AuthenticationException e) {
             LoginResponse respuestaLogin = LoginResponse.builder().exito(false).mensaje("Error en login: " + e.getMessage()).build();
+
             logger.error("Error en login: " + e.getMessage());
             return ResponseEntity.badRequest().body(respuestaLogin);
         }

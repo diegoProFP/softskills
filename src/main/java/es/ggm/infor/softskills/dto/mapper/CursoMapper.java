@@ -4,7 +4,7 @@ import es.ggm.infor.softskills.model.Curso;
 import org.mapstruct.*;
 
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CursoMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "shortname", target = "nombreCorto")
