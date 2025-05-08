@@ -65,13 +65,25 @@ public class CursosController extends MainController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('TEACHER')")
-    public String getAlumnos(@PathVariable String id) {
+    public ResponseEntity<?> getCurso(@PathVariable String id) {
 
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        try {
+            // Obtener usuario autenticado y token
+            UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
+            String token = authenticatedUserService.getAuthenticatedToken();
 
+            // Llamar al servicio para registrar el curso
+            Curso recuperado = cursoService.obtenerCursoConAlumnos(token, Long.parseLong(id));
 
-        return "Lista de alumnos del curso  " + id;
+            return ResponseEntity.ok(recuperado);
+        } catch (GeneralMoodleException e) {
+            logger.error("Error al registrar el curso con ID {}: {}", id, e.getMessage());
+            return ResponseEntity.internalServerError().body("Error al registrar el curso: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Error inesperado al registrar el curso con ID {}: {}", id, e.getMessage());
+            return ResponseEntity.internalServerError().body("Error inesperado: " + e.getMessage());
+        }
     }
 
 

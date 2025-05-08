@@ -6,6 +6,7 @@ import es.ggm.infor.moodleintegration.dto.AlumnoMoodleDTO;
 import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.dao.CursoRepository;
+import es.ggm.infor.softskills.dto.mapper.AlumnoMapper;
 import es.ggm.infor.softskills.dto.mapper.CursoMapper;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CursoService implements ICursoService {
@@ -30,6 +33,9 @@ public class CursoService implements ICursoService {
     private final IMoodleClient moodleClient;
     @Autowired
     private final IAlumnoService alumnoService;
+
+    @Autowired
+    private final AlumnoMapper alumnoMapper;
 
 
     private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
@@ -45,6 +51,11 @@ public class CursoService implements ICursoService {
                 .build();
 
         List<AlumnoMoodleDTO> alumnosMoodle = moodleClient.getAlumnos(token, cursoId);
+
+        // Filtrar alumnos que no coincidan con el id del profesor
+        alumnosMoodle.removeIf(alumno -> alumno.id.equals(idProfesor));
+
+
         List<Alumno> alumnos = alumnoService.insertarAlumnosSiNoExisten(alumnosMoodle);
         curso.setAlumnos(alumnos);
 
@@ -84,5 +95,25 @@ public class CursoService implements ICursoService {
             resultado.add(curso);
         }
         return resultado;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Curso obtenerCursoConAlumnos(String token, Long cursoId) throws GeneralMoodleException {
+        Curso curso = cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new IllegalArgumentException("Curso no encontrado: " + cursoId));
+
+        List<AlumnoMoodleDTO> datosMoodle = moodleClient.getAlumnos(token, cursoId);
+        Map<Long, AlumnoMoodleDTO> dtoMap = datosMoodle.stream()
+                .collect(Collectors.toMap(dto -> dto.id, dto -> dto));
+
+        for (Alumno alumno : curso.getAlumnos()) {
+            AlumnoMoodleDTO dto = dtoMap.get(alumno.getId());
+            if (dto != null) {
+                alumnoMapper.updateFromDto(dto, alumno);
+            }
+        }
+
+        return curso;
     }
 }
