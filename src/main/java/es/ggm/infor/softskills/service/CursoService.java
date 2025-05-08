@@ -8,6 +8,7 @@ import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.dao.CursoRepository;
 import es.ggm.infor.softskills.dto.mapper.AlumnoMapper;
 import es.ggm.infor.softskills.dto.mapper.CursoMapper;
+import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Profesor;
@@ -44,6 +45,11 @@ public class CursoService implements ICursoService {
     @Override
     @Transactional
     public void registrarCurso(String token, Long cursoId, Long idProfesor) throws GeneralMoodleException {
+
+        if (cursoRepository.existsById(cursoId)) {
+            throw new CursoYaRegistradoException("El curso con ID " + cursoId + " ya ha sido registrado previamente.");
+        }
+
         Profesor profesor = Profesor.builder().id(idProfesor).build();
         Curso curso = Curso.builder()
                 .id(cursoId)
@@ -54,7 +60,6 @@ public class CursoService implements ICursoService {
 
         // Filtrar alumnos que no coincidan con el id del profesor
         alumnosMoodle.removeIf(alumno -> alumno.id.equals(idProfesor));
-
 
         List<Alumno> alumnos = alumnoService.insertarAlumnosSiNoExisten(alumnosMoodle);
         curso.setAlumnos(alumnos);
@@ -103,6 +108,8 @@ public class CursoService implements ICursoService {
         Curso curso = cursoRepository.findById(cursoId)
                 .orElseThrow(() -> new IllegalArgumentException("Curso no encontrado: " + cursoId));
 
+        rellenarDetallesCurso(token, cursoId, curso);
+
         List<AlumnoMoodleDTO> datosMoodle = moodleClient.getAlumnos(token, cursoId);
         Map<Long, AlumnoMoodleDTO> dtoMap = datosMoodle.stream()
                 .collect(Collectors.toMap(dto -> dto.id, dto -> dto));
@@ -115,5 +122,10 @@ public class CursoService implements ICursoService {
         }
 
         return curso;
+    }
+
+    private void rellenarDetallesCurso(String token, Long cursoId, Curso curso) throws GeneralMoodleException {
+        CursoMoodleDTO detallesCursoMoodle = moodleClient.getInfoCurso(token, cursoId);
+        cursoMapper.updateFromDto(detallesCursoMoodle, curso);
     }
 }

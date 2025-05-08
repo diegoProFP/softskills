@@ -4,6 +4,7 @@ import es.ggm.infor.moodleintegration.client.MoodleClient;
 import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
+import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
 import es.ggm.infor.softskills.service.CursoService;
@@ -14,10 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -87,7 +85,7 @@ public class CursosController extends MainController {
     }
 
 
-    @GetMapping("/{id}/registrar")
+    @PostMapping("/{id}/registrar")
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> registrarCurso(@PathVariable Long id) {
         try {
@@ -99,6 +97,9 @@ public class CursosController extends MainController {
             cursoService.registrarCurso(token, id, usuario.getUserid());
 
             return ResponseEntity.ok("Curso registrado correctamente");
+        }catch (CursoYaRegistradoException e) {
+            logger.error("El curso con ID {} ya ha sido registrado: {}", id, e.getMessage());
+            return ResponseEntity.badRequest().body("El curso ya ha sido registrado: " + e.getMessage());
         } catch (GeneralMoodleException e) {
             logger.error("Error al registrar el curso con ID {}: {}", id, e.getMessage());
             return ResponseEntity.internalServerError().body("Error al registrar el curso: " + e.getMessage());
