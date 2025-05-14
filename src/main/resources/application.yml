@@ -3,6 +3,10 @@ moodle:
   service: moodle_mobile_app
   cursos-actuales: true
 
+soft-skills:
+  login-manual: true
+  token-manual: eaeb9b18c8f25e4e0038e33e7bf8e07c
+
 jwt:
   secret: mi_clave_super_secreta_para_firmar
   expiration: 3600000

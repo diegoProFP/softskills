@@ -12,6 +12,7 @@ import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Profesor;
+import es.ggm.infor.softskills.model.SoftSkill;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class CursoService implements ICursoService {
     private final IMoodleClient moodleClient;
     @Autowired
     private final IAlumnoService alumnoService;
+
+    @Autowired
+    private final ISoftSkillService softSkillService;
 
     @Autowired
     private final AlumnoMapper alumnoMapper;
@@ -63,6 +67,10 @@ public class CursoService implements ICursoService {
 
         List<Alumno> alumnos = alumnoService.insertarAlumnosSiNoExisten(alumnosMoodle);
         curso.setAlumnos(alumnos);
+
+        // Añadir todas las soft skills existentes
+        List<SoftSkill> todasLasSoftSkills = softSkillService.getAllSoftSkills();
+        curso.setSoftSkills(todasLasSoftSkills);
 
         cursoRepository.save(curso);
     }
@@ -122,6 +130,12 @@ public class CursoService implements ICursoService {
         }
 
         return curso;
+    }
+
+    @Override
+    public Curso getCursoById(Long cursoId) {
+        return cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new IllegalArgumentException("Curso no encontrado: " + cursoId));
     }
 
     private void rellenarDetallesCurso(String token, Long cursoId, Curso curso) throws GeneralMoodleException {

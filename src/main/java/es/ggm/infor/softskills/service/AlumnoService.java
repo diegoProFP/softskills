@@ -41,4 +41,15 @@ public class AlumnoService implements IAlumnoService {
         todos.addAll(nuevos);
         return todos;
     }
+
+    @Override
+    public List<Alumno> getAllAlumnos() {
+        return alumnoRepository.findAll();
+    }
+
+    @Override
+    public Alumno getAlumnoById(Long id) {
+        return alumnoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Alumno not found with id: " + id));
+    }
 }

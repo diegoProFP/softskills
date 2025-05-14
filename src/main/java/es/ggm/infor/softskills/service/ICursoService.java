@@ -24,7 +24,7 @@ public interface ICursoService {
     @Transactional(readOnly = true)
     Curso obtenerCursoConAlumnos(String token, Long cursoId) throws GeneralMoodleException;
 
-//    Curso getCursoById(Long cursoId);
+    Curso getCursoById(Long cursoId);
 //
 //    void incluirCursoNuevo(Curso infoCurso);
 

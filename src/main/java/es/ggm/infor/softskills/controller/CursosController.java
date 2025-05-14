@@ -25,16 +25,12 @@ public class CursosController extends MainController {
 
     private static final Logger logger = LoggerFactory.getLogger(CursosController.class);
 
-
-    private final MoodleClient moodleClient;
-
     private final ICursoService cursoService;
 
     private final AuthenticatedUserService authenticatedUserService;
 
 
-    public CursosController(MoodleClient moodleClient, ICursoService cursoService, AuthenticatedUserService authenticatedUserService) {
-        this.moodleClient = moodleClient;
+    public CursosController(ICursoService cursoService, AuthenticatedUserService authenticatedUserService) {
         this.cursoService = cursoService;
         this.authenticatedUserService = authenticatedUserService;
     }

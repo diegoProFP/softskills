@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface IAlumnoService {
     List<Alumno> insertarAlumnosSiNoExisten(List<AlumnoMoodleDTO> alumnosMoodle);
+
+    List<Alumno> getAllAlumnos();
+
+    Alumno getAlumnoById(Long id);
 }
