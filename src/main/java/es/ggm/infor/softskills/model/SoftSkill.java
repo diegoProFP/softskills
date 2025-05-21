@@ -1,10 +1,10 @@
 package es.ggm.infor.softskills.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "SOFT_SKILL")
@@ -12,7 +12,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class SoftSkill {
     @Id
     @GeneratedValue
@@ -20,4 +19,23 @@ public class SoftSkill {
 
     private String nombre;
     private String descripcion;
+    //Por ahora el tipo de la SK, en desarrollo
+    private int tipo = 1;
+
+    @OneToMany
+    private List<MotivosSoftSkill> listaMotivos;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "softSkills", fetch = FetchType.LAZY)
+    private List<Curso> cursos;
+
+
+    @Override
+    public String toString() {
+        return "SoftSkill{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                '}';
+    }
 }

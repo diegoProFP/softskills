@@ -18,6 +18,8 @@ public interface ISoftSkillService {
 
     @Transactional
     void insertarMuestra(MuestraRequest request);
+
+    List<SoftSkill> getSoftSkillsByCursoId(Long cursoId);
     // void saveSoftSkill(SoftSkill softSkill);
     // void deleteSoftSkill(Long id);
 }

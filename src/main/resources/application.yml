@@ -4,7 +4,7 @@ moodle:
   cursos-actuales: true
 
 soft-skills:
-  login-manual: true
+  login-manual: false
   token-manual: eaeb9b18c8f25e4e0038e33e7bf8e07c
 
 jwt:

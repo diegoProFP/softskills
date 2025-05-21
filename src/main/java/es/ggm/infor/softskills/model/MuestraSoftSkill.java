@@ -39,4 +39,7 @@ public class MuestraSoftSkill {
 
     @Column(name = "VALOR")
     private int valor; // 1 positivo, -1 negativo
+
+    @Column(name = "COMENTARIO")
+    private String motivoComentario;
 }

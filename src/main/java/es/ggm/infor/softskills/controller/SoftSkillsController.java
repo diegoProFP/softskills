@@ -2,6 +2,7 @@ package es.ggm.infor.softskills.controller;
 
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.softskills.dto.MuestraRequest;
+import es.ggm.infor.softskills.dto.SKResponse;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
 import es.ggm.infor.softskills.service.ISoftSkillService;
 import es.ggm.infor.softskills.service.SoftSkillService;
@@ -25,7 +26,7 @@ public class SoftSkillsController {
     private final AuthenticatedUserService authenticatedUserService;
 
     @PostMapping("/muestra")
-    public ResponseEntity<String> registrarMuestra(@RequestBody MuestraRequest request) {
+    public ResponseEntity<SKResponse> registrarMuestra(@RequestBody MuestraRequest request) {
 
 
         try {
@@ -35,11 +36,13 @@ public class SoftSkillsController {
             request.setProfesorId(usuario.getUserid());
             log.info("Recibida solicitud para insertar muestra: {}", request);
             softSkillService.insertarMuestra(request);
-            return ResponseEntity.ok("Muestra registrada correctamente");
+            SKResponse respuesta = SKResponse.builder().exito(true).build();
+            return ResponseEntity.ok(respuesta);
 
         } catch (Exception e) {
             log.error("Error al grabar la muestra: {}", e.getMessage());
-            return ResponseEntity.internalServerError().body("Error al grabar la muestra: " + e.getMessage());
+            SKResponse respuesta = SKResponse.builder().exito(false).mensaje("Error al grabar la muestra: " + e.getMessage()).build();
+            return ResponseEntity.internalServerError().body(respuesta);
 
         }
     }

@@ -33,7 +33,7 @@ public class Curso {
     )
     private List<Alumno> alumnos = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "CURSO_SOFT_SKILL",
             joinColumns = @JoinColumn(name = "CURSO_ID"),

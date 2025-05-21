@@ -129,6 +129,11 @@ public class CursoService implements ICursoService {
             }
         }
 
+        // Recuperar y asignar las soft skills al curso
+//        List<SoftSkill> softSkills = softSkillService.getSoftSkillsByCursoId(cursoId);
+//        curso.setSoftSkills(softSkills);
+
+
         return curso;
     }
 

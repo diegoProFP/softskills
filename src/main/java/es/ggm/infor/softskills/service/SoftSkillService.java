@@ -71,4 +71,10 @@ public class SoftSkillService implements ISoftSkillService {
         muestraRepository.save(muestra);
         log.info("Muestra registrada con éxito: {}", muestra);
     }
+
+    @Override
+    public List<SoftSkill> getSoftSkillsByCursoId(Long cursoId) {
+
+         return softSkillRepository.findByCursoId(cursoId);
+    }
 }
