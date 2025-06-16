@@ -63,7 +63,9 @@ public class CursoService implements ICursoService {
         List<AlumnoMoodleDTO> alumnosMoodle = moodleClient.getAlumnos(token, cursoId);
 
         // Filtrar alumnos que no coincidan con el id del profesor
-        alumnosMoodle.removeIf(alumno -> alumno.id.equals(idProfesor));
+//        alumnosMoodle.removeIf(alumno -> alumno.id.equals(idProfesor));
+
+        alumnosMoodle = alumnosMoodle.stream().filter(alumno -> !alumno.id.equals(idProfesor)).collect(Collectors.toList());
 
         List<Alumno> alumnos = alumnoService.insertarAlumnosSiNoExisten(alumnosMoodle);
         curso.setAlumnos(alumnos);
@@ -128,6 +130,8 @@ public class CursoService implements ICursoService {
                 alumnoMapper.updateFromDto(dto, alumno);
             }
         }
+
+        curso.getAlumnos().sort(Comparator.comparing(Alumno::getNombre));
 
         // Recuperar y asignar las soft skills al curso
 //        List<SoftSkill> softSkills = softSkillService.getSoftSkillsByCursoId(cursoId);

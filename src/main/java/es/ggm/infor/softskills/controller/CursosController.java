@@ -75,7 +75,7 @@ public class CursosController extends MainController {
             logger.error("Error al registrar el curso con ID {}: {}", id, e.getMessage());
             return ResponseEntity.internalServerError().body("Error al registrar el curso: " + e.getMessage());
         } catch (Exception e) {
-            logger.error("Error inesperado al registrar el curso con ID {}: {}", id, e.getMessage());
+            logger.error("Error inesperado al consultar el curso con ID {}: {}", id, e.getMessage());
             return ResponseEntity.internalServerError().body("Error inesperado: " + e.getMessage());
         }
     }
