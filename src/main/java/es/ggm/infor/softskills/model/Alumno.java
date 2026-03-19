@@ -1,10 +1,10 @@
 package es.ggm.infor.softskills.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Entity
 @Table(name = "ALUMNO")
@@ -22,6 +22,9 @@ public class Alumno extends Usuario{
 
     @Transient
     private String email;
+
+    @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TotalSoftSkillPorAlumno> totalesSoftSkills;
 
     public Alumno() {
         super();

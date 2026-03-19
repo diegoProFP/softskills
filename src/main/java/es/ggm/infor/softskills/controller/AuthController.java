@@ -53,6 +53,7 @@ public class AuthController extends MainController{
             );
 
             String moodleToken = authentication.getName();
+
             UsuarioMoodleDTO userInfo = (UsuarioMoodleDTO) authentication.getDetails();
 
             String token = JwtUtils.generateToken(authentication, userInfo, secretKey);
@@ -60,7 +61,7 @@ public class AuthController extends MainController{
 
             LoginResponse respuestaLogin = LoginResponse.builder().token(token).datosUsuario(userInfo).exito(true).build();
 
-            logger.info("Usuario logado: " + userInfo.getFullname() + "| Token: " + token);
+            logger.info("Usuario logado: " + userInfo.getFullname() + "| Token: " + token + " MoodleToken: " + moodleToken);
             return ResponseEntity.ok(respuestaLogin);
         } catch (AuthenticationException e) {
             LoginResponse respuestaLogin = LoginResponse.builder().exito(false).mensaje("Error en login: " + e.getMessage()).build();

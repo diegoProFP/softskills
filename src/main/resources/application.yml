@@ -1,11 +1,11 @@
 moodle:
   base-url: https://aulavirtual33.educa.madrid.org/ies.garciamarquez.leganes
   service: moodle_mobile_app
-  cursos-actuales: true
+  cursos-actuales: false
 
 soft-skills:
-  login-manual: false
-  token-manual: eaeb9b18c8f25e4e0038e33e7bf8e07c
+  login-manual: true
+  token-manual: 1d70250028c1f849d06ef89c8dc7cb6d
 
 jwt:
   secret: mi_clave_super_secreta_para_firmar

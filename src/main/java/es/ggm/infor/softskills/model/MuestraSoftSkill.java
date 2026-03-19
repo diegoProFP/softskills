@@ -38,7 +38,7 @@ public class MuestraSoftSkill {
     private LocalDateTime fecha;
 
     @Column(name = "VALOR")
-    private int valor; // 1 positivo, -1 negativo
+    private int valor; // 1 positivo, -1 negativox
 
     @Column(name = "COMENTARIO")
     private String motivoComentario;
