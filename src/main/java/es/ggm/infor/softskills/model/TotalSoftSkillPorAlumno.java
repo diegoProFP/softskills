@@ -27,5 +27,11 @@ public class TotalSoftSkillPorAlumno {
 
     private BigDecimal puntuacionTotal;
 
+    @Builder.Default
+    private Long numMuestras = 0L;
+
+    @Builder.Default
+    private Long numIncidencias = 0L;
+
     // getters y setters
 }

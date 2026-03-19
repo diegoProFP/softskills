@@ -22,6 +22,11 @@ public class SoftSkill {
     //Por ahora el tipo de la SK, en desarrollo
     private int tipo = 1;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TIPO_MEDICION")
+    @Builder.Default
+    private TipoMedicionSoftSkill tipoMedicion = TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS;
+
     @OneToMany
     private List<MotivosSoftSkill> listaMotivos;
 
