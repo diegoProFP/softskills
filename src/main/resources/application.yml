@@ -1,11 +1,11 @@
 moodle:
   base-url: https://aulavirtual33.educa.madrid.org/ies.garciamarquez.leganes
   service: moodle_mobile_app
-  cursos-actuales: true
+  cursos-actuales: false
 
 soft-skills:
-  login-manual: false
-  token-manual: eaeb9b18c8f25e4e0038e33e7bf8e07c
+  login-manual: true
+  token-manual: d43e1b3e723b9df3c3aee5adc416a537
 
 jwt:
   secret: mi_clave_super_secreta_para_firmar
@@ -16,7 +16,7 @@ jwt:
 
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/softskills_db}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:4500/softskills_db}
     username: ${SPRING_DATASOURCE_USERNAME:root}
     password: ${SPRING_DATASOURCE_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver

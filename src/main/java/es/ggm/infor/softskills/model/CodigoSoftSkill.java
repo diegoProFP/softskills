@@ -1,0 +1,14 @@
+package es.ggm.infor.softskills.model;
+
+public enum CodigoSoftSkill {
+    GENERICA,
+    ENFOQUE_DISTRACCIONES,
+    PARTICIPACION,
+    TRABAJO_EN_EQUIPO,
+    COMUNICACION,
+    AUTONOMIA,
+    RESPONSABILIDAD,
+    GESTION_EMOCIONAL,
+    RESOLUCION_DE_PROBLEMAS,
+    RESPETO
+}
