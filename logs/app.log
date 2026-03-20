@@ -25094,3 +25094,1069 @@ io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-05-10T10:45:04Z. Curren
             on lm1_1.id=lm1_0.listaMotivos_id 
     where
         lm1_0.SoftSkill_id=?
+2026-03-20 09:03:14 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-20 09:03:14 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-03-20 09:03:14 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-20 09:03:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-20 09:03:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-20 09:03:21 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-03-20 09:03:21 [main] INFO  e.g.i.s.SoftskillsApplication - Starting SoftskillsApplication using Java 22.0.2 with PID 34928 (D:\Docencia\SOFT SKILLS\softskills\target\classes started by diego in D:\Docencia\SOFT SKILLS\softskills)
+2026-03-20 09:03:21 [main] INFO  e.g.i.s.SoftskillsApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-20 09:03:22 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-20 09:03:22 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 81 ms. Found 7 JPA repository interfaces.
+2026-03-20 09:03:23 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-20 09:03:23 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-03-20 09:03:23 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-20 09:03:23 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2026-03-20 09:03:23 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-20 09:03:23 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1821 ms
+2026-03-20 09:03:23 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-20 09:03:23 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2026-03-20 09:03:23 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-20 09:03:23 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-20 09:03:23 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-20 09:03:24 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@12166229
+2026-03-20 09:03:24 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-20 09:03:24 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-20 09:03:24 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-03-20 09:03:24 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-20 09:03:25 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    create table TotalSoftSkillPorAlumnoCurso (
+        id bigint not null,
+        numIncidencias bigint,
+        numMuestras bigint,
+        puntuacionTotal decimal(38,2),
+        alumno_ID bigint not null,
+        curso_ID bigint not null,
+        softSkill_id bigint not null,
+        primary key (id)
+    ) engine=InnoDB
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    create table TotalSoftSkillPorAlumnoCurso_SEQ (
+        next_val bigint
+    ) engine=InnoDB
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    insert into TotalSoftSkillPorAlumnoCurso_SEQ values ( 1 )
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    alter table TotalSoftSkillPorAlumnoCurso 
+       drop index UKk1yu3p0ldyv7g6ssjh8ew04rm
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    alter table TotalSoftSkillPorAlumnoCurso 
+       add constraint UKk1yu3p0ldyv7g6ssjh8ew04rm unique (alumno_id, curso_id, softSkill_id)
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    alter table TotalSoftSkillPorAlumnoCurso 
+       add constraint FKr2bnvt2x2c5w44aqkiaqd1hak 
+       foreign key (alumno_ID) 
+       references ALUMNO (ID)
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    alter table TotalSoftSkillPorAlumnoCurso 
+       add constraint FKo0ffnbyt43uis7isang0j9bcb 
+       foreign key (curso_ID) 
+       references CURSO (ID)
+2026-03-20 09:03:25 [main] DEBUG org.hibernate.SQL - 
+    alter table TotalSoftSkillPorAlumnoCurso 
+       add constraint FK4sfgn1ga44uocce7tihbr7guy 
+       foreign key (softSkill_id) 
+       references SOFT_SKILL (id)
+2026-03-20 09:03:25 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-20 09:03:26 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-20 09:03:27 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-20 09:03:27 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name moodleAuthenticationProvider
+2026-03-20 09:03:27 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-03-20 09:03:27 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-03-20 09:03:28 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-20 09:03:28 [main] INFO  e.g.i.s.SoftskillsApplication - Started SoftskillsApplication in 7.302 seconds (process running for 7.961)
+2026-03-20 09:05:52 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-20 09:05:52 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-20 09:05:52 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2026-03-20 09:05:52 [http-nio-8080-exec-1] INFO  e.g.i.s.c.SoftSkillsController - Recibida solicitud para insertar muestra: MuestraRequest(profesorId=1445, cursoId=1000, alumnoId=2573, softSkillId=1, valor=-1)
+2026-03-20 09:05:52 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 09:05:52 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.ID 
+    from
+        ALUMNO a1_0 
+    where
+        a1_0.ID=?
+2026-03-20 09:05:52 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        next_val as id_val 
+    from
+        MUESTRA_SOFT_SKILL_SEQ for update
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    update
+        MUESTRA_SOFT_SKILL_SEQ 
+    set
+        next_val= ? 
+    where
+        next_val=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        null 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        tsspac1_0.id,
+        tsspac1_0.alumno_ID,
+        tsspac1_0.curso_ID,
+        tsspac1_0.numIncidencias,
+        tsspac1_0.numMuestras,
+        tsspac1_0.puntuacionTotal,
+        tsspac1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumnoCurso tsspac1_0 
+    where
+        tsspac1_0.alumno_ID=? 
+        and tsspac1_0.curso_ID=? 
+        and tsspac1_0.softSkill_id=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        next_val as id_val 
+    from
+        TotalSoftSkillPorAlumnoCurso_SEQ for update
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumnoCurso_SEQ 
+    set
+        next_val= ? 
+    where
+        next_val=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0 
+    where
+        tsspa1_0.alumno_ID=? 
+        and tsspa1_0.softSkill_id=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        next_val as id_val 
+    from
+        TotalSoftSkillPorAlumno_SEQ for update
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumno_SEQ 
+    set
+        next_val= ? 
+    where
+        next_val=?
+2026-03-20 09:05:53 [http-nio-8080-exec-1] INFO  e.g.i.s.service.SoftSkillService - Muestra registrada con exito: MuestraSoftSkill(id=552, curso=Curso(id=1000, profesor=Profesor(), alumnos=[Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[])], softSkills=[SoftSkill{id=1, nombre='Equipo y material', descripcion='Bla bla'}], nombreCorto=null, nombreLargo=null, nombreVisible=null, registradoSk=false, fechaAlta=null), alumno=Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), softSkill=SoftSkill{id=1, nombre='Equipo y material', descripcion='Bla bla'}, profesor=Profesor(), fecha=2026-03-20T09:05:53.022555700, valor=-1, motivoComentario=null)
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        MUESTRA_SOFT_SKILL
+        (ALUMNO_ID, CURSO_ID, FECHA, COMENTARIO, PROFESOR_ID, SOFT_SKILL_ID, VALOR, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        TotalSoftSkillPorAlumnoCurso
+        (alumno_ID, curso_ID, numIncidencias, numMuestras, puntuacionTotal, softSkill_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:05:53 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        TotalSoftSkillPorAlumno
+        (alumno_ID, numIncidencias, numMuestras, puntuacionTotal, softSkill_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-03-20 09:06:12 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 09:06:13 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:06:13 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        tsspac1_0.id,
+        tsspac1_0.alumno_ID,
+        tsspac1_0.curso_ID,
+        tsspac1_0.numIncidencias,
+        tsspac1_0.numMuestras,
+        tsspac1_0.puntuacionTotal,
+        tsspac1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumnoCurso tsspac1_0 
+    join
+        CURSO c1_0 
+            on c1_0.ID=tsspac1_0.curso_ID 
+    join
+        ALUMNO a1_0 
+            on a1_0.ID=tsspac1_0.alumno_ID 
+    where
+        c1_0.ID=? 
+        and a1_0.ID in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:06:13 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 09:06:13 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:06:13 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        lm1_0.SoftSkill_id,
+        lm1_1.id,
+        lm1_1.motivo 
+    from
+        SOFT_SKILL_listaMotivos lm1_0 
+    join
+        MOTIVO_SOFT_SKILL lm1_1 
+            on lm1_1.id=lm1_0.listaMotivos_id 
+    where
+        lm1_0.SoftSkill_id=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] INFO  e.g.i.s.c.SoftSkillsController - Recibida solicitud para insertar muestra: MuestraRequest(profesorId=1445, cursoId=1000, alumnoId=2573, softSkillId=1, valor=-1)
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.ID 
+    from
+        ALUMNO a1_0 
+    where
+        a1_0.ID=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        null 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        tsspac1_0.id,
+        tsspac1_0.alumno_ID,
+        tsspac1_0.curso_ID,
+        tsspac1_0.numIncidencias,
+        tsspac1_0.numMuestras,
+        tsspac1_0.puntuacionTotal,
+        tsspac1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumnoCurso tsspac1_0 
+    where
+        tsspac1_0.alumno_ID=? 
+        and tsspac1_0.curso_ID=? 
+        and tsspac1_0.softSkill_id=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0 
+    where
+        tsspa1_0.alumno_ID=? 
+        and tsspa1_0.softSkill_id=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] INFO  e.g.i.s.service.SoftSkillService - Muestra registrada con exito: [FAILED toString()]
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        MUESTRA_SOFT_SKILL
+        (ALUMNO_ID, CURSO_ID, FECHA, COMENTARIO, PROFESOR_ID, SOFT_SKILL_ID, VALOR, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumnoCurso 
+    set
+        alumno_ID=?,
+        curso_ID=?,
+        numIncidencias=?,
+        numMuestras=?,
+        puntuacionTotal=?,
+        softSkill_id=? 
+    where
+        id=?
+2026-03-20 09:06:29 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumno 
+    set
+        alumno_ID=?,
+        numIncidencias=?,
+        numMuestras=?,
+        puntuacionTotal=?,
+        softSkill_id=? 
+    where
+        id=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] INFO  e.g.i.s.c.SoftSkillsController - Recibida solicitud para insertar muestra: MuestraRequest(profesorId=1445, cursoId=1000, alumnoId=2573, softSkillId=1, valor=-1)
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.ID 
+    from
+        ALUMNO a1_0 
+    where
+        a1_0.ID=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        null 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        tsspac1_0.id,
+        tsspac1_0.alumno_ID,
+        tsspac1_0.curso_ID,
+        tsspac1_0.numIncidencias,
+        tsspac1_0.numMuestras,
+        tsspac1_0.puntuacionTotal,
+        tsspac1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumnoCurso tsspac1_0 
+    where
+        tsspac1_0.alumno_ID=? 
+        and tsspac1_0.curso_ID=? 
+        and tsspac1_0.softSkill_id=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0 
+    where
+        tsspa1_0.alumno_ID=? 
+        and tsspa1_0.softSkill_id=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] INFO  e.g.i.s.service.SoftSkillService - Muestra registrada con exito: [FAILED toString()]
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        MUESTRA_SOFT_SKILL
+        (ALUMNO_ID, CURSO_ID, FECHA, COMENTARIO, PROFESOR_ID, SOFT_SKILL_ID, VALOR, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumnoCurso 
+    set
+        alumno_ID=?,
+        curso_ID=?,
+        numIncidencias=?,
+        numMuestras=?,
+        puntuacionTotal=?,
+        softSkill_id=? 
+    where
+        id=?
+2026-03-20 09:06:52 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumno 
+    set
+        alumno_ID=?,
+        numIncidencias=?,
+        numMuestras=?,
+        puntuacionTotal=?,
+        softSkill_id=? 
+    where
+        id=?
+2026-03-20 09:12:04 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.ID 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 09:12:04 [http-nio-8080-exec-10] INFO  e.g.i.s.controller.AuthController - Usuario logado: Diego A. Di Gionantonio Rodrigo| Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkNDNlMWIzZTcyM2I5ZGYzYzNhZWU1YWRjNDE2YTUzNyIsInJvbGVzIjpbIlJPTEVfVEVBQ0hFUiJdLCJzaXRlbmFtZSI6IkkuRS5TLiBHYWJyaWVsIEdhcmPDrWEgTcOhcnF1ZXogKExlZ2Fuw6lzKSIsImZpcnN0bmFtZSI6IkRpZWdvIEEuIERpIiwibGFzdG5hbWUiOiJHaW9uYW50b25pbyBSb2RyaWdvIiwidXNlcmlkIjoxNDQ1LCJ1c2VybmFtZSI6ImRpZWdvLmRpMSIsImZ1bGxuYW1lIjoiRGllZ28gQS4gRGkgR2lvbmFudG9uaW8gUm9kcmlnbyIsImxhbmciOiJlcyIsInNpdGV1cmwiOiJodHRwczovL2F1bGF2aXJ0dWFsMzMuZWR1Y2EubWFkcmlkLm9yZy9pZXMuZ2FyY2lhbWFycXVlei5sZWdhbmVzIiwidXNlclBpY3R1cmVVcmwiOiJodHRwczovL2F1bGF2aXJ0dWFsMzMuZWR1Y2EubWFkcmlkLm9yZy9pZXMuZ2FyY2lhbWFycXVlei5sZWdhbmVzL3BsdWdpbmZpbGUucGhwLzYzNTMvdXNlci9pY29uL2VkdWNhbWFkcmlkL2YxP3Jldj0yOTMzMTUiLCJpYXQiOjE3NzM5OTQzMjQsImV4cCI6MTc3NDA4MDcyNH0.I60AH4fAvFHWk8TWU0Fo3MQgDQkCfQRISoJUORff3qs MoodleToken: d43e1b3e723b9df3c3aee5adc416a537
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        c1_0.PROFESOR_ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        p1_0.ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.ID 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        lm1_0.SoftSkill_id,
+        lm1_1.id,
+        lm1_1.motivo 
+    from
+        SOFT_SKILL_listaMotivos lm1_0 
+    join
+        MOTIVO_SOFT_SKILL lm1_1 
+            on lm1_1.id=lm1_0.listaMotivos_id 
+    where
+        lm1_0.SoftSkill_id=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:12:06 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        c1_0.PROFESOR_ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        p1_0.ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.ID 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        lm1_0.SoftSkill_id,
+        lm1_1.id,
+        lm1_1.motivo 
+    from
+        SOFT_SKILL_listaMotivos lm1_0 
+    join
+        MOTIVO_SOFT_SKILL lm1_1 
+            on lm1_1.id=lm1_0.listaMotivos_id 
+    where
+        lm1_0.SoftSkill_id=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:13:00 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:13:22 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 09:13:22 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:13:22 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        tsspac1_0.id,
+        tsspac1_0.alumno_ID,
+        tsspac1_0.curso_ID,
+        tsspac1_0.numIncidencias,
+        tsspac1_0.numMuestras,
+        tsspac1_0.puntuacionTotal,
+        tsspac1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumnoCurso tsspac1_0 
+    join
+        CURSO c1_0 
+            on c1_0.ID=tsspac1_0.curso_ID 
+    join
+        ALUMNO a1_0 
+            on a1_0.ID=tsspac1_0.alumno_ID 
+    where
+        c1_0.ID=? 
+        and a1_0.ID in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:13:22 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 09:13:22 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:13:22 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        lm1_0.SoftSkill_id,
+        lm1_1.id,
+        lm1_1.motivo 
+    from
+        SOFT_SKILL_listaMotivos lm1_0 
+    join
+        MOTIVO_SOFT_SKILL lm1_1 
+            on lm1_1.id=lm1_0.listaMotivos_id 
+    where
+        lm1_0.SoftSkill_id=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] INFO  e.g.i.s.c.SoftSkillsController - Recibida solicitud para insertar muestra: MuestraRequest(profesorId=1445, cursoId=1000, alumnoId=2648, softSkillId=1, valor=-1)
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.ID 
+    from
+        ALUMNO a1_0 
+    where
+        a1_0.ID=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        null 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        tsspac1_0.id,
+        tsspac1_0.alumno_ID,
+        tsspac1_0.curso_ID,
+        tsspac1_0.numIncidencias,
+        tsspac1_0.numMuestras,
+        tsspac1_0.puntuacionTotal,
+        tsspac1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumnoCurso tsspac1_0 
+    where
+        tsspac1_0.alumno_ID=? 
+        and tsspac1_0.curso_ID=? 
+        and tsspac1_0.softSkill_id=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        next_val as id_val 
+    from
+        TotalSoftSkillPorAlumnoCurso_SEQ for update
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumnoCurso_SEQ 
+    set
+        next_val= ? 
+    where
+        next_val=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0 
+    where
+        tsspa1_0.alumno_ID=? 
+        and tsspa1_0.softSkill_id=?
+2026-03-20 09:13:39 [http-nio-8080-exec-9] INFO  e.g.i.s.service.SoftSkillService - Muestra registrada con exito: [FAILED toString()]
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        MUESTRA_SOFT_SKILL
+        (ALUMNO_ID, CURSO_ID, FECHA, COMENTARIO, PROFESOR_ID, SOFT_SKILL_ID, VALOR, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        TotalSoftSkillPorAlumnoCurso
+        (alumno_ID, curso_ID, numIncidencias, numMuestras, puntuacionTotal, softSkill_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:13:39 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        TotalSoftSkillPorAlumno
+        (alumno_ID, numIncidencias, numMuestras, puntuacionTotal, softSkill_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-03-20 09:13:44 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 09:13:45 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 09:13:45 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        tsspac1_0.id,
+        tsspac1_0.alumno_ID,
+        tsspac1_0.curso_ID,
+        tsspac1_0.numIncidencias,
+        tsspac1_0.numMuestras,
+        tsspac1_0.puntuacionTotal,
+        tsspac1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumnoCurso tsspac1_0 
+    join
+        CURSO c1_0 
+            on c1_0.ID=tsspac1_0.curso_ID 
+    join
+        ALUMNO a1_0 
+            on a1_0.ID=tsspac1_0.alumno_ID 
+    where
+        c1_0.ID=? 
+        and a1_0.ID in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 09:13:45 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 09:13:45 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 09:13:45 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        lm1_0.SoftSkill_id,
+        lm1_1.id,
+        lm1_1.motivo 
+    from
+        SOFT_SKILL_listaMotivos lm1_0 
+    join
+        MOTIVO_SOFT_SKILL lm1_1 
+            on lm1_1.id=lm1_0.listaMotivos_id 
+    where
+        lm1_0.SoftSkill_id=?

@@ -6,7 +6,7 @@ import es.ggm.infor.moodleintegration.dto.AlumnoMoodleDTO;
 import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.dao.CursoRepository;
-import es.ggm.infor.softskills.dao.TotalSoftSkillRepository;
+import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoCursoRepository;
 import es.ggm.infor.softskills.dto.mapper.AlumnoMapper;
 import es.ggm.infor.softskills.dto.mapper.CursoMapper;
 import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
@@ -14,7 +14,7 @@ import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Profesor;
 import es.ggm.infor.softskills.model.SoftSkill;
-import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumno;
+import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumnoCurso;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class CursoService implements ICursoService {
     private final AlumnoMapper alumnoMapper;
 
     @Autowired
-    private final TotalSoftSkillRepository totalSoftSkillRepository;
+    private final TotalSoftSkillPorAlumnoCursoRepository totalSoftSkillPorAlumnoCursoRepository;
 
 
     private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
@@ -137,7 +137,7 @@ public class CursoService implements ICursoService {
             }
         }
 
-        rellenarTotalesPorSkill(curso.getAlumnos());
+        rellenarTotalesPorSkill(curso);
 
         curso.getAlumnos().sort(Comparator.comparing(Alumno::getNombre));
 
@@ -160,7 +160,8 @@ public class CursoService implements ICursoService {
         cursoMapper.updateFromDto(detallesCursoMoodle, curso);
     }
 
-    private void rellenarTotalesPorSkill(List<Alumno> alumnos) {
+    private void rellenarTotalesPorSkill(Curso curso) {
+        List<Alumno> alumnos = curso.getAlumnos();
         if (alumnos == null || alumnos.isEmpty()) {
             return;
         }
@@ -169,10 +170,11 @@ public class CursoService implements ICursoService {
                 .map(Alumno::getId)
                 .toList();
 
-        List<TotalSoftSkillPorAlumno> totales = totalSoftSkillRepository.findByAlumnoIdIn(alumnoIds);
+        List<TotalSoftSkillPorAlumnoCurso> totales = totalSoftSkillPorAlumnoCursoRepository
+                .findByCursoIdAndAlumnoIdIn(curso.getId(), alumnoIds);
 
         Map<Long, Map<String, BigDecimal>> totalesPorAlumno = new HashMap<>();
-        for (TotalSoftSkillPorAlumno total : totales) {
+        for (TotalSoftSkillPorAlumnoCurso total : totales) {
             totalesPorAlumno
                     .computeIfAbsent(total.getAlumno().getId(), ignored -> new LinkedHashMap<>())
                     .put(total.getSoftSkill().getNombre(), total.getPuntuacionTotal());

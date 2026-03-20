@@ -1,8 +1,8 @@
 package es.ggm.infor.softskills.service.strategy;
 
 import es.ggm.infor.softskills.model.MuestraSoftSkill;
+import es.ggm.infor.softskills.model.SoftSkillTotalizable;
 import es.ggm.infor.softskills.model.TipoMedicionSoftSkill;
-import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumno;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -20,7 +20,7 @@ public class PenalizacionPorTramosStrategy implements SoftSkillTotalStrategy {
     }
 
     @Override
-    public void aplicarAlta(TotalSoftSkillPorAlumno total, MuestraSoftSkill muestra) {
+    public void aplicarAlta(SoftSkillTotalizable total, MuestraSoftSkill muestra) {
         BigDecimal puntuacionActual = total.getPuntuacionTotal() != null
                 ? total.getPuntuacionTotal()
                 : PUNTUACION_INICIAL;
