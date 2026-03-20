@@ -24523,3 +24523,574 @@ io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-05-10T10:45:04Z. Curren
         softSkill_id=? 
     where
         id=?
+2026-03-19 15:17:12 [http-nio-8080-exec-4] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-03-19 15:17:18 [http-nio-8080-exec-3] INFO  e.g.i.s.c.SoftSkillsController - Recibida solicitud para insertar muestra: MuestraRequest(profesorId=2927, cursoId=1023, alumnoId=2679, softSkillId=1, valor=-1)
+2026-03-19 15:17:18 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-19 15:17:19 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.ID 
+    from
+        ALUMNO a1_0 
+    where
+        a1_0.ID=?
+2026-03-19 15:17:19 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-19 15:17:19 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-19 15:17:19 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        null 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-19 15:17:19 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0 
+    where
+        tsspa1_0.alumno_ID=? 
+        and tsspa1_0.softSkill_id=?
+2026-03-19 15:17:19 [http-nio-8080-exec-3] INFO  e.g.i.s.service.SoftSkillService - Muestra registrada con exito: [FAILED toString()]
+2026-03-19 15:17:19 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        MUESTRA_SOFT_SKILL
+        (ALUMNO_ID, CURSO_ID, FECHA, COMENTARIO, PROFESOR_ID, SOFT_SKILL_ID, VALOR, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-19 15:17:19 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumno 
+    set
+        alumno_ID=?,
+        numIncidencias=?,
+        numMuestras=?,
+        puntuacionTotal=?,
+        softSkill_id=? 
+    where
+        id=?
+2026-03-19 21:43:30 [HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6h24m25s152ms104µs800ns).
+2026-03-19 22:42:13 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-19 22:42:13 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-03-19 22:42:13 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-19 22:42:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-19 22:42:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-20 08:38:25 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-03-20 08:38:25 [main] INFO  e.g.i.s.SoftskillsApplication - Starting SoftskillsApplication using Java 22.0.2 with PID 6500 (D:\Docencia\SOFT SKILLS\softskills\target\classes started by diego in D:\Docencia\SOFT SKILLS\softskills)
+2026-03-20 08:38:25 [main] INFO  e.g.i.s.SoftskillsApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-20 08:38:27 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-20 08:38:27 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 148 ms. Found 6 JPA repository interfaces.
+2026-03-20 08:38:28 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-20 08:38:28 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-03-20 08:38:28 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-20 08:38:28 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2026-03-20 08:38:28 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-20 08:38:28 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2826 ms
+2026-03-20 08:38:28 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-20 08:38:29 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2026-03-20 08:38:29 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-20 08:38:29 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-20 08:38:29 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-20 08:38:29 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2b4829aa
+2026-03-20 08:38:29 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-20 08:38:29 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-20 08:38:29 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-03-20 08:38:29 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-20 08:38:31 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-20 08:38:31 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-20 08:38:32 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-20 08:38:32 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-20 08:38:32 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name moodleAuthenticationProvider
+2026-03-20 08:38:32 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-03-20 08:38:33 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-03-20 08:38:33 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-20 08:38:33 [main] INFO  e.g.i.s.SoftskillsApplication - Started SoftskillsApplication in 8.66 seconds (process running for 9.512)
+2026-03-20 08:39:02 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-20 08:39:02 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-20 08:39:02 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 3 ms
+2026-03-20 08:39:07 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.ID 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 08:39:07 [http-nio-8080-exec-3] INFO  e.g.i.s.controller.AuthController - Usuario logado: M.Soledad Ortiz Trevino| Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxZDcwMjUwMDI4YzFmODQ5ZDA2ZWY4OWM4ZGM3Y2I2ZCIsInJvbGVzIjpbIlJPTEVfVEVBQ0hFUiJdLCJzaXRlbmFtZSI6IkkuRS5TLiBHYWJyaWVsIEdhcmPDrWEgTcOhcnF1ZXogKExlZ2Fuw6lzKSIsImZpcnN0bmFtZSI6Ik0uU29sZWRhZCIsImxhc3RuYW1lIjoiT3J0aXogVHJldmlubyIsInVzZXJpZCI6MjkyNywidXNlcm5hbWUiOiJtYXJpYS5vcnRpenRyZXZpbm8iLCJmdWxsbmFtZSI6Ik0uU29sZWRhZCBPcnRpeiBUcmV2aW5vIiwibGFuZyI6ImVzIiwic2l0ZXVybCI6Imh0dHBzOi8vYXVsYXZpcnR1YWwzMy5lZHVjYS5tYWRyaWQub3JnL2llcy5nYXJjaWFtYXJxdWV6LmxlZ2FuZXMiLCJ1c2VyUGljdHVyZVVybCI6Imh0dHBzOi8vYXVsYXZpcnR1YWwzMy5lZHVjYS5tYWRyaWQub3JnL2llcy5nYXJjaWFtYXJxdWV6LmxlZ2FuZXMvcGx1Z2luZmlsZS5waHAvNjExMDEvdXNlci9pY29uL2VkdWNhbWFkcmlkL2YxP3Jldj01MjE1NzIwIiwiaWF0IjoxNzczOTkyMzQ3LCJleHAiOjE3NzQwNzg3NDd9.FCyvQsMDAt2EuFbRoinyUY7LeOsIHzCp3WgpwVj5sGI MoodleToken: 1d70250028c1f849d06ef89c8dc7cb6d
+2026-03-20 08:40:22 [http-nio-8080-exec-7] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-03-20 08:40:23 [http-nio-8080-exec-8] WARN  o.s.w.s.m.s.DefaultHandlerExceptionResolver - Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-03-20 08:40:34 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.ID 
+    from
+        ALUMNO a1_0
+2026-03-20 08:40:34 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0
+2026-03-20 08:40:34 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 08:45:51 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-20 08:45:51 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-03-20 08:45:51 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-20 08:45:51 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-20 08:45:51 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-20 08:45:52 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-03-20 08:45:53 [main] INFO  e.g.i.s.SoftskillsApplication - Starting SoftskillsApplication using Java 22.0.2 with PID 19472 (D:\Docencia\SOFT SKILLS\softskills\target\classes started by diego in D:\Docencia\SOFT SKILLS\softskills)
+2026-03-20 08:45:53 [main] INFO  e.g.i.s.SoftskillsApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-20 08:45:53 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-20 08:45:54 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 92 ms. Found 6 JPA repository interfaces.
+2026-03-20 08:45:54 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-20 08:45:54 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-03-20 08:45:54 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-20 08:45:54 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2026-03-20 08:45:54 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-20 08:45:54 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1860 ms
+2026-03-20 08:45:55 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-20 08:45:55 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2026-03-20 08:45:55 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-20 08:45:55 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-20 08:45:55 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-20 08:45:55 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@12166229
+2026-03-20 08:45:55 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-20 08:45:55 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-20 08:45:55 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-03-20 08:45:55 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-20 08:45:56 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-20 08:45:57 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-20 08:45:57 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-20 08:45:58 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-20 08:45:58 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name moodleAuthenticationProvider
+2026-03-20 08:45:58 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-03-20 08:45:59 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-03-20 08:45:59 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-20 08:45:59 [main] INFO  e.g.i.s.SoftskillsApplication - Started SoftskillsApplication in 6.706 seconds (process running for 7.332)
+2026-03-20 08:47:14 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-20 08:47:14 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2026-03-20 08:47:14 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-20 08:47:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-03-20 08:47:14 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-03-20 08:47:16 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-03-20 08:47:16 [main] INFO  e.g.i.s.SoftskillsApplication - Starting SoftskillsApplication using Java 22.0.2 with PID 28620 (D:\Docencia\SOFT SKILLS\softskills\target\classes started by diego in D:\Docencia\SOFT SKILLS\softskills)
+2026-03-20 08:47:16 [main] INFO  e.g.i.s.SoftskillsApplication - No active profile set, falling back to 1 default profile: "default"
+2026-03-20 08:47:17 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-20 08:47:17 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 81 ms. Found 6 JPA repository interfaces.
+2026-03-20 08:47:18 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-03-20 08:47:18 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-03-20 08:47:18 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-03-20 08:47:18 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.39]
+2026-03-20 08:47:18 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-03-20 08:47:18 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1682 ms
+2026-03-20 08:47:18 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-20 08:47:18 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.11.Final
+2026-03-20 08:47:18 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-03-20 08:47:19 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-20 08:47:19 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-03-20 08:47:19 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2b4829aa
+2026-03-20 08:47:19 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-03-20 08:47:19 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-20 08:47:19 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-03-20 08:47:19 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-20 08:47:20 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-20 08:47:20 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-20 08:47:21 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-20 08:47:21 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-20 08:47:21 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name moodleAuthenticationProvider
+2026-03-20 08:47:21 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-03-20 08:47:22 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-03-20 08:47:22 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-03-20 08:47:22 [main] INFO  e.g.i.s.SoftskillsApplication - Started SoftskillsApplication in 6.05 seconds (process running for 6.68)
+2026-03-20 08:47:24 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-20 08:47:24 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-03-20 08:47:24 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-03-20 08:47:25 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.ID 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 08:47:25 [http-nio-8080-exec-1] INFO  e.g.i.s.controller.AuthController - Usuario logado: Diego A. Di Gionantonio Rodrigo| Token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkNDNlMWIzZTcyM2I5ZGYzYzNhZWU1YWRjNDE2YTUzNyIsInJvbGVzIjpbIlJPTEVfVEVBQ0hFUiJdLCJmdWxsbmFtZSI6IkRpZWdvIEEuIERpIEdpb25hbnRvbmlvIFJvZHJpZ28iLCJsYW5nIjoiZXMiLCJzaXRldXJsIjoiaHR0cHM6Ly9hdWxhdmlydHVhbDMzLmVkdWNhLm1hZHJpZC5vcmcvaWVzLmdhcmNpYW1hcnF1ZXoubGVnYW5lcyIsInVzZXJQaWN0dXJlVXJsIjoiaHR0cHM6Ly9hdWxhdmlydHVhbDMzLmVkdWNhLm1hZHJpZC5vcmcvaWVzLmdhcmNpYW1hcnF1ZXoubGVnYW5lcy9wbHVnaW5maWxlLnBocC82MzUzL3VzZXIvaWNvbi9lZHVjYW1hZHJpZC9mMT9yZXY9MjkzMzE1Iiwic2l0ZW5hbWUiOiJJLkUuUy4gR2FicmllbCBHYXJjw61hIE3DoXJxdWV6IChMZWdhbsOpcykiLCJmaXJzdG5hbWUiOiJEaWVnbyBBLiBEaSIsImxhc3RuYW1lIjoiR2lvbmFudG9uaW8gUm9kcmlnbyIsInVzZXJpZCI6MTQ0NSwidXNlcm5hbWUiOiJkaWVnby5kaTEiLCJpYXQiOjE3NzM5OTI4NDUsImV4cCI6MTc3NDA3OTI0NX0.bm27TE8Ru8gnZRJU6siBoCb5aT0Bz3-QEO4eb1O67Z8 MoodleToken: d43e1b3e723b9df3c3aee5adc416a537
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        c1_0.PROFESOR_ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        p1_0.ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        p1_0.ID 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        lm1_0.SoftSkill_id,
+        lm1_1.id,
+        lm1_1.motivo 
+    from
+        SOFT_SKILL_listaMotivos lm1_0 
+    join
+        MOTIVO_SOFT_SKILL lm1_1 
+            on lm1_1.id=lm1_0.listaMotivos_id 
+    where
+        lm1_0.SoftSkill_id=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 08:47:50 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] INFO  e.g.i.s.c.SoftSkillsController - Recibida solicitud para insertar muestra: MuestraRequest(profesorId=1445, cursoId=1000, alumnoId=2573, softSkillId=1, valor=-1)
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.ID 
+    from
+        ALUMNO a1_0 
+    where
+        a1_0.ID=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        next_val as id_val 
+    from
+        MUESTRA_SOFT_SKILL_SEQ for update
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    update
+        MUESTRA_SOFT_SKILL_SEQ 
+    set
+        next_val= ? 
+    where
+        next_val=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        null 
+    from
+        PROFESOR p1_0 
+    where
+        p1_0.ID=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0 
+    where
+        tsspa1_0.alumno_ID=? 
+        and tsspa1_0.softSkill_id=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        next_val as id_val 
+    from
+        TotalSoftSkillPorAlumno_SEQ for update
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    update
+        TotalSoftSkillPorAlumno_SEQ 
+    set
+        next_val= ? 
+    where
+        next_val=?
+2026-03-20 08:49:02 [http-nio-8080-exec-8] INFO  e.g.i.s.service.SoftSkillService - Muestra registrada con exito: MuestraSoftSkill(id=502, curso=Curso(id=1000, profesor=Profesor(), alumnos=[Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[])], softSkills=[SoftSkill{id=1, nombre='Equipo y material', descripcion='Bla bla'}], nombreCorto=null, nombreLargo=null, nombreVisible=null, registradoSk=false, fechaAlta=null), alumno=Alumno(nombre=null, username=null, email=null, totalesPorSkill=null, totalesSoftSkills=[]), softSkill=SoftSkill{id=1, nombre='Equipo y material', descripcion='Bla bla'}, profesor=Profesor(), fecha=2026-03-20T08:49:02.068271500, valor=-1, motivoComentario=null)
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        MUESTRA_SOFT_SKILL
+        (ALUMNO_ID, CURSO_ID, FECHA, COMENTARIO, PROFESOR_ID, SOFT_SKILL_ID, VALOR, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 08:49:02 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    insert 
+    into
+        TotalSoftSkillPorAlumno
+        (alumno_ID, numIncidencias, numMuestras, puntuacionTotal, softSkill_id, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-03-20 08:49:31 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        c1_0.ID,
+        c1_0.FECHA_ALTA,
+        p1_0.ID 
+    from
+        CURSO c1_0 
+    left join
+        PROFESOR p1_0 
+            on p1_0.ID=c1_0.PROFESOR_ID 
+    where
+        c1_0.ID=?
+2026-03-20 08:49:32 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        a1_0.CURSO_ID,
+        a1_1.ID 
+    from
+        CURSO_ALUMNO a1_0 
+    join
+        ALUMNO a1_1 
+            on a1_1.ID=a1_0.ALUMNO_ID 
+    where
+        a1_0.CURSO_ID=?
+2026-03-20 08:49:32 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        tsspa1_0.id,
+        tsspa1_0.alumno_ID,
+        tsspa1_0.numIncidencias,
+        tsspa1_0.numMuestras,
+        tsspa1_0.puntuacionTotal,
+        tsspa1_0.softSkill_id 
+    from
+        TotalSoftSkillPorAlumno tsspa1_0 
+    join
+        ALUMNO a1_0 
+            on a1_0.ID=tsspa1_0.alumno_ID 
+    where
+        a1_0.ID in (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-03-20 08:49:32 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.id,
+        ss1_0.descripcion,
+        ss1_0.nombre,
+        ss1_0.tipo,
+        ss1_0.TIPO_MEDICION 
+    from
+        SOFT_SKILL ss1_0 
+    where
+        ss1_0.id=?
+2026-03-20 08:49:32 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        ss1_0.CURSO_ID,
+        ss1_1.id,
+        ss1_1.descripcion,
+        ss1_1.nombre,
+        ss1_1.tipo,
+        ss1_1.TIPO_MEDICION 
+    from
+        CURSO_SOFT_SKILL ss1_0 
+    join
+        SOFT_SKILL ss1_1 
+            on ss1_1.id=ss1_0.SOFT_SKILL_ID 
+    where
+        ss1_0.CURSO_ID=?
+2026-03-20 08:49:32 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        lm1_0.SoftSkill_id,
+        lm1_1.id,
+        lm1_1.motivo 
+    from
+        SOFT_SKILL_listaMotivos lm1_0 
+    join
+        MOTIVO_SOFT_SKILL lm1_1 
+            on lm1_1.id=lm1_0.listaMotivos_id 
+    where
+        lm1_0.SoftSkill_id=?

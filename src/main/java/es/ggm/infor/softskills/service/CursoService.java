@@ -6,6 +6,7 @@ import es.ggm.infor.moodleintegration.dto.AlumnoMoodleDTO;
 import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.dao.CursoRepository;
+import es.ggm.infor.softskills.dao.TotalSoftSkillRepository;
 import es.ggm.infor.softskills.dto.mapper.AlumnoMapper;
 import es.ggm.infor.softskills.dto.mapper.CursoMapper;
 import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
@@ -13,6 +14,7 @@ import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Profesor;
 import es.ggm.infor.softskills.model.SoftSkill;
+import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumno;
 import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,6 +44,9 @@ public class CursoService implements ICursoService {
 
     @Autowired
     private final AlumnoMapper alumnoMapper;
+
+    @Autowired
+    private final TotalSoftSkillRepository totalSoftSkillRepository;
 
 
     private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
@@ -131,6 +137,8 @@ public class CursoService implements ICursoService {
             }
         }
 
+        rellenarTotalesPorSkill(curso.getAlumnos());
+
         curso.getAlumnos().sort(Comparator.comparing(Alumno::getNombre));
 
         // Recuperar y asignar las soft skills al curso
@@ -150,5 +158,30 @@ public class CursoService implements ICursoService {
     private void rellenarDetallesCurso(String token, Long cursoId, Curso curso) throws GeneralMoodleException {
         CursoMoodleDTO detallesCursoMoodle = moodleClient.getInfoCurso(token, cursoId);
         cursoMapper.updateFromDto(detallesCursoMoodle, curso);
+    }
+
+    private void rellenarTotalesPorSkill(List<Alumno> alumnos) {
+        if (alumnos == null || alumnos.isEmpty()) {
+            return;
+        }
+
+        List<Long> alumnoIds = alumnos.stream()
+                .map(Alumno::getId)
+                .toList();
+
+        List<TotalSoftSkillPorAlumno> totales = totalSoftSkillRepository.findByAlumnoIdIn(alumnoIds);
+
+        Map<Long, Map<String, BigDecimal>> totalesPorAlumno = new HashMap<>();
+        for (TotalSoftSkillPorAlumno total : totales) {
+            totalesPorAlumno
+                    .computeIfAbsent(total.getAlumno().getId(), ignored -> new LinkedHashMap<>())
+                    .put(total.getSoftSkill().getNombre(), total.getPuntuacionTotal());
+        }
+
+        for (Alumno alumno : alumnos) {
+            alumno.setTotalesPorSkill(new LinkedHashMap<>(
+                    totalesPorAlumno.getOrDefault(alumno.getId(), Collections.emptyMap())
+            ));
+        }
     }
 }

@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface TotalSoftSkillRepository extends JpaRepository<TotalSoftSkillPorAlumno, Long> {
     Optional<TotalSoftSkillPorAlumno> findByAlumnoAndSoftSkill(Alumno alumno, SoftSkill softSkill);
     List<TotalSoftSkillPorAlumno> findByAlumnoId(Long alumnoId);
+    List<TotalSoftSkillPorAlumno> findByAlumnoIdIn(List<Long> alumnoIds);
     List<TotalSoftSkillPorAlumno> findBySoftSkillIdOrderByPuntuacionTotalDesc(Long softSkillId);
 }

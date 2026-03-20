@@ -5,7 +5,7 @@ moodle:
 
 soft-skills:
   login-manual: true
-  token-manual: 1d70250028c1f849d06ef89c8dc7cb6d
+  token-manual: d43e1b3e723b9df3c3aee5adc416a537
 
 jwt:
   secret: mi_clave_super_secreta_para_firmar

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 @RestController
-@RequestMapping("/api/alumnos")
-public class AlumnoController {
+@RequestMapping(MainController.BASE_PATH + "/alumnos")
+public class AlumnoController extends MainController{
     @Autowired
     private AlumnoResumenService resumenService;
     @Autowired private AlumnoDetalleService detalleService;
