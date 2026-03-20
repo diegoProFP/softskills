@@ -22,6 +22,18 @@ public class SoftSkill {
     //Por ahora el tipo de la SK, en desarrollo
     private int tipo = 1;
 
+    // Identificador estable para que frontend pueda mapear iconos y categorias
+    // sin depender del nombre visible de la soft skill.
+    @Enumerated(EnumType.STRING)
+    @Column(name = "CODIGO")
+    @Builder.Default
+    private CodigoSoftSkill codigo = CodigoSoftSkill.GENERICA;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TIPO_MEDICION")
+    @Builder.Default
+    private TipoMedicionSoftSkill tipoMedicion = TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS;
+
     @OneToMany
     private List<MotivosSoftSkill> listaMotivos;
 

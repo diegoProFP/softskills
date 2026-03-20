@@ -4,7 +4,11 @@ import es.ggm.infor.softskills.dao.CursoRepository;
 import es.ggm.infor.softskills.dao.MuestraSoftSkillRepository;
 import es.ggm.infor.softskills.dao.SoftSkillRepository;
 import es.ggm.infor.softskills.dto.MuestraRequest;
-import es.ggm.infor.softskills.model.*;
+import es.ggm.infor.softskills.model.Alumno;
+import es.ggm.infor.softskills.model.Curso;
+import es.ggm.infor.softskills.model.MuestraSoftSkill;
+import es.ggm.infor.softskills.model.Profesor;
+import es.ggm.infor.softskills.model.SoftSkill;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,32 +23,31 @@ import java.util.List;
 public class SoftSkillService implements ISoftSkillService {
     private static final Logger log = LoggerFactory.getLogger(SoftSkillService.class);
 
-     private final SoftSkillRepository softSkillRepository;
-
+    private final SoftSkillRepository softSkillRepository;
     private final CursoRepository cursoRepository;
     private final IAlumnoService alumnoService;
     private final MuestraSoftSkillRepository muestraRepository;
+    private final SoftSkillTotalService softSkillTotalService;
 
+    @Override
+    public List<SoftSkill> getAllSoftSkills() {
+        return softSkillRepository.findAll();
+    }
 
+    @Override
+    public SoftSkill getSoftSkillById(Long id) {
+        return softSkillRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Soft Skill not found with id: " + id));
+    }
 
-     @Override
-     public List<SoftSkill> getAllSoftSkills() {
-         return softSkillRepository.findAll();
-     }
-
-     @Override
-     public SoftSkill getSoftSkillById(Long id) {
-         return softSkillRepository.findById(id)
-                 .orElseThrow(() -> new RuntimeException("Soft Skill not found with id: " + id));
-     }
     @Override
     @Transactional
     public void insertarMuestra(MuestraRequest request) {
-        log.debug("Insertando muestra para curso {}, alumno {}, skill {}, valor {}", request.getCursoId(), request.getAlumnoId(), request.getSoftSkillId(), request.getValor());
+        log.debug("Insertando muestra para curso {}, alumno {}, skill {}, valor {}",
+                request.getCursoId(), request.getAlumnoId(), request.getSoftSkillId(), request.getValor());
 
         Curso curso = cursoRepository.findById(request.getCursoId())
                 .orElseThrow(() -> new IllegalArgumentException("Curso no encontrado: " + request.getCursoId()));
-
 
         Alumno alumno = alumnoService.getAlumnoById(request.getAlumnoId());
 
@@ -69,12 +72,12 @@ public class SoftSkillService implements ISoftSkillService {
                 .build();
 
         muestraRepository.save(muestra);
-        log.info("Muestra registrada con éxito: {}", muestra);
+        softSkillTotalService.aplicarNuevaMuestra(muestra);
+        log.info("Muestra registrada con exito: {}", muestra);
     }
 
     @Override
     public List<SoftSkill> getSoftSkillsByCursoId(Long cursoId) {
-
-         return softSkillRepository.findByCursoId(cursoId);
+        return softSkillRepository.findByCursoId(cursoId);
     }
 }

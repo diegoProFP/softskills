@@ -1,10 +1,13 @@
 package es.ggm.infor.softskills.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "ALUMNO")
@@ -22,6 +25,13 @@ public class Alumno extends Usuario{
 
     @Transient
     private String email;
+
+    @Transient
+    @Builder.Default
+    private Map<String, BigDecimal> totalesPorSkill = new HashMap<>();
+
+    @OneToMany(mappedBy = "alumno", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TotalSoftSkillPorAlumno> totalesSoftSkills;
 
     public Alumno() {
         super();
@@ -49,5 +59,13 @@ public class Alumno extends Usuario{
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Map<String, BigDecimal> getTotalesPorSkill() {
+        return totalesPorSkill;
+    }
+
+    public void setTotalesPorSkill(Map<String, BigDecimal> totalesPorSkill) {
+        this.totalesPorSkill = totalesPorSkill;
     }
 }
