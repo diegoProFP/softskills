@@ -66,6 +66,10 @@ public class CursoService implements ICursoService {
                 .profesor(profesor)
                 .build();
 
+        CursoMoodleDTO detallesCurso = moodleClient.getInfoCurso(token, cursoId);
+        cursoMapper.updateFromDto(detallesCurso, curso);
+//        cursoMapper.aplicarIdNumberEnCurso(detallesCurso.idnumber, curso);
+
         List<AlumnoMoodleDTO> alumnosMoodle = moodleClient.getAlumnos(token, cursoId);
 
         // Filtrar alumnos que no coincidan con el id del profesor
@@ -113,6 +117,7 @@ public class CursoService implements ICursoService {
             } else {
                 curso = cursoMapper.fromDto(dto);
             }
+            cursoMapper.aplicarIdNumberEnCurso(dto.idnumber, curso);
             resultado.add(curso);
         }
         return resultado;
@@ -158,6 +163,7 @@ public class CursoService implements ICursoService {
     private void rellenarDetallesCurso(String token, Long cursoId, Curso curso) throws GeneralMoodleException {
         CursoMoodleDTO detallesCursoMoodle = moodleClient.getInfoCurso(token, cursoId);
         cursoMapper.updateFromDto(detallesCursoMoodle, curso);
+        cursoMapper.aplicarIdNumberEnCurso(detallesCursoMoodle.idnumber, curso);
     }
 
     private void rellenarTotalesPorSkill(Curso curso) {
