@@ -25,6 +25,10 @@ public class Curso {
     @JoinColumn(name = "PROFESOR_ID")
     private Profesor profesor;
 
+    @ManyToOne
+    @JoinColumn(name = "GRUPO_ACADEMICO_ID")
+    private Grupo grupoAcademico;
+
     @ManyToMany
     @JoinTable(
             name = "CURSO_ALUMNO",
@@ -57,18 +61,6 @@ public class Curso {
     @Column(name = "IDNUMBER")
     private String idNumber;
 
-    @Column(name = "NIVEL")
-    private String nivel;
-
-    @Column(name = "CICLO_FORMATIVO")
-    private String cicloFormativo;
-
-    @Column(name = "GRUPO")
-    private String grupo;
-
-    @Column(name = "CURSO_ESCOLAR")
-    private String cursoEscolar;
-
     @Column(name = "FECHA_ALTA")
     private LocalDateTime fechaAlta;
 
@@ -87,6 +79,14 @@ public class Curso {
 
     public void setProfesor(Profesor profesor) {
         this.profesor = profesor;
+    }
+
+    public Grupo getGrupoAcademico() {
+        return grupoAcademico;
+    }
+
+    public void setGrupoAcademico(Grupo grupoAcademico) {
+        this.grupoAcademico = grupoAcademico;
     }
 
     public List<Alumno> getAlumnos() {
@@ -143,38 +143,6 @@ public class Curso {
 
     public void setIdNumber(String idNumber) {
         this.idNumber = idNumber;
-    }
-
-    public String getNivel() {
-        return nivel;
-    }
-
-    public void setNivel(String nivel) {
-        this.nivel = nivel;
-    }
-
-    public String getCicloFormativo() {
-        return cicloFormativo;
-    }
-
-    public void setCicloFormativo(String cicloFormativo) {
-        this.cicloFormativo = cicloFormativo;
-    }
-
-    public String getGrupo() {
-        return grupo;
-    }
-
-    public void setGrupo(String grupo) {
-        this.grupo = grupo;
-    }
-
-    public String getCursoEscolar() {
-        return cursoEscolar;
-    }
-
-    public void setCursoEscolar(String cursoEscolar) {
-        this.cursoEscolar = cursoEscolar;
     }
 
     public LocalDateTime getFechaAlta() {

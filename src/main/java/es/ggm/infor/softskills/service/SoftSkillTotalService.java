@@ -1,13 +1,17 @@
 package es.ggm.infor.softskills.service;
 
+import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoCursoRepository;
+import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoGrupoRepository;
 import es.ggm.infor.softskills.dao.TotalSoftSkillRepository;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
+import es.ggm.infor.softskills.model.Grupo;
 import es.ggm.infor.softskills.model.MuestraSoftSkill;
 import es.ggm.infor.softskills.model.SoftSkill;
+import es.ggm.infor.softskills.model.SoftSkillTotalizable;
 import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumno;
 import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumnoCurso;
-import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoCursoRepository;
+import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumnoGrupo;
 import es.ggm.infor.softskills.service.strategy.SoftSkillTotalStrategy;
 import es.ggm.infor.softskills.service.strategy.SoftSkillTotalStrategyResolver;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +28,17 @@ import java.util.Optional;
 public class SoftSkillTotalService {
 
     // El total global del alumno no replica muestra a muestra lo que ocurre en cada curso.
-    // Se recalcula a partir de los totales por curso y se suaviza para que el indicador
-    // general evolucione de forma más estable durante el piloto anual.
+    // Se recalcula a partir del agregado intermedio mas cercano al seguimiento academico:
+    // preferentemente por grupo y, como compatibilidad para datos antiguos, por curso.
     private static final BigDecimal GLOBAL_SMOOTHING_FACTOR = new BigDecimal("0.25");
     private static final BigDecimal ZERO = BigDecimal.ZERO;
     private static final BigDecimal MAX_SCORE = new BigDecimal("10.00");
 
     private final TotalSoftSkillRepository totalSoftSkillRepository;
     private final TotalSoftSkillPorAlumnoCursoRepository totalSoftSkillPorAlumnoCursoRepository;
+    private final TotalSoftSkillPorAlumnoGrupoRepository totalSoftSkillPorAlumnoGrupoRepository;
     private final SoftSkillTotalStrategyResolver strategyResolver;
+    private final GrupoService grupoService;
 
     @Transactional
     public void aplicarNuevaMuestra(MuestraSoftSkill muestra) {
@@ -40,9 +46,15 @@ public class SoftSkillTotalService {
         Curso curso = muestra.getCurso();
         SoftSkill softSkill = muestra.getSoftSkill();
         SoftSkillTotalStrategy strategy = strategyResolver.resolve(softSkill);
+        Grupo grupo = grupoService.resolverGrupoDesdeCurso(curso);
 
         actualizarTotalPorCurso(alumno, curso, softSkill, muestra, strategy);
-        actualizarTotalGlobal(alumno, softSkill);
+
+        if (grupo != null) {
+            actualizarTotalPorGrupo(alumno, grupo, softSkill);
+        }
+
+        actualizarTotalGlobal(alumno, softSkill, grupo != null);
     }
 
     private void actualizarTotalPorCurso(Alumno alumno, Curso curso, SoftSkill softSkill,
@@ -60,11 +72,33 @@ public class SoftSkillTotalService {
         totalSoftSkillPorAlumnoCursoRepository.save(total);
     }
 
-    private void actualizarTotalGlobal(Alumno alumno, SoftSkill softSkill) {
-        List<TotalSoftSkillPorAlumnoCurso> totalesPorCurso = totalSoftSkillPorAlumnoCursoRepository
-                .findByAlumnoAndSoftSkill(alumno, softSkill);
+    private void actualizarTotalPorGrupo(Alumno alumno, Grupo grupo, SoftSkill softSkill) {
+        List<TotalSoftSkillPorAlumnoCurso> totalesPorCursoDelGrupo = totalSoftSkillPorAlumnoCursoRepository
+                .findByAlumnoAndCurso_GrupoAcademicoAndSoftSkill(alumno, grupo, softSkill);
 
-        if (totalesPorCurso.isEmpty()) {
+        if (totalesPorCursoDelGrupo.isEmpty()) {
+            return;
+        }
+
+        Optional<TotalSoftSkillPorAlumnoGrupo> totalExistente = totalSoftSkillPorAlumnoGrupoRepository
+                .findByAlumnoAndGrupoAndSoftSkill(alumno, grupo, softSkill);
+
+        TotalSoftSkillPorAlumnoGrupo total = totalExistente.orElseGet(() -> TotalSoftSkillPorAlumnoGrupo.builder()
+                .alumno(alumno)
+                .grupo(grupo)
+                .softSkill(softSkill)
+                .build());
+
+        recalcularAgregado(total, totalesPorCursoDelGrupo);
+        totalSoftSkillPorAlumnoGrupoRepository.save(total);
+    }
+
+    private void actualizarTotalGlobal(Alumno alumno, SoftSkill softSkill, boolean usarGrupoComoFuente) {
+        List<? extends SoftSkillTotalizable> totalesFuente = usarGrupoComoFuente
+                ? totalSoftSkillPorAlumnoGrupoRepository.findByAlumnoAndSoftSkill(alumno, softSkill)
+                : totalSoftSkillPorAlumnoCursoRepository.findByAlumnoAndSoftSkill(alumno, softSkill);
+
+        if (totalesFuente.isEmpty()) {
             return;
         }
 
@@ -75,42 +109,50 @@ public class SoftSkillTotalService {
                 .softSkill(softSkill)
                 .build());
 
-        recalcularTotalGlobal(total, totalesPorCurso);
+        recalcularTotalGlobal(total, totalesFuente);
         totalSoftSkillRepository.save(total);
     }
 
+    private void recalcularAgregado(SoftSkillTotalizable totalDestino,
+                                    List<? extends SoftSkillTotalizable> totalesFuente) {
+        BigDecimal puntuacionObjetivo = calcularObjetivoGlobal(totalesFuente);
+        totalDestino.setPuntuacionTotal(acotarPuntuacion(puntuacionObjetivo));
+        totalDestino.setNumMuestras(sumarMuestras(totalesFuente));
+        totalDestino.setNumIncidencias(sumarIncidencias(totalesFuente));
+    }
+
     private void recalcularTotalGlobal(TotalSoftSkillPorAlumno totalGlobal,
-                                       List<TotalSoftSkillPorAlumnoCurso> totalesPorCurso) {
-        BigDecimal puntuacionObjetivo = calcularObjetivoGlobal(totalesPorCurso);
+                                       List<? extends SoftSkillTotalizable> totalesFuente) {
+        BigDecimal puntuacionObjetivo = calcularObjetivoGlobal(totalesFuente);
         BigDecimal puntuacionActual = totalGlobal.getPuntuacionTotal();
 
         // Si ya existe total global, lo acercamos gradualmente al objetivo calculado.
-        // Con 0.25 el valor general absorbe un 25% de la diferencia en cada recálculo:
+        // Con 0.25 el valor general absorbe un 25% de la diferencia en cada recalculo:
         // suficiente para reflejar tendencia, pero evitando bandazos por cambios locales.
         BigDecimal nuevaPuntuacion = puntuacionActual == null
                 ? puntuacionObjetivo
                 : puntuacionActual.add(
                         puntuacionObjetivo.subtract(puntuacionActual)
                                 .multiply(GLOBAL_SMOOTHING_FACTOR)
-                  );
+                );
 
         totalGlobal.setPuntuacionTotal(acotarPuntuacion(nuevaPuntuacion));
-        totalGlobal.setNumMuestras(sumarMuestras(totalesPorCurso));
-        totalGlobal.setNumIncidencias(sumarIncidencias(totalesPorCurso));
+        totalGlobal.setNumMuestras(sumarMuestras(totalesFuente));
+        totalGlobal.setNumIncidencias(sumarIncidencias(totalesFuente));
     }
 
-    private BigDecimal calcularObjetivoGlobal(List<TotalSoftSkillPorAlumnoCurso> totalesPorCurso) {
+    private BigDecimal calcularObjetivoGlobal(List<? extends SoftSkillTotalizable> totalesFuente) {
         BigDecimal sumaPonderada = ZERO;
         BigDecimal sumaPesos = ZERO;
 
-        for (TotalSoftSkillPorAlumnoCurso totalCurso : totalesPorCurso) {
-            BigDecimal puntuacion = totalCurso.getPuntuacionTotal() != null
-                    ? totalCurso.getPuntuacionTotal()
+        for (SoftSkillTotalizable totalFuente : totalesFuente) {
+            BigDecimal puntuacion = totalFuente.getPuntuacionTotal() != null
+                    ? totalFuente.getPuntuacionTotal()
                     : ZERO;
-            // Los cursos con más muestras pesan más en el total global, pero con
-            // rendimientos decrecientes para que un único curso muy medido no monopolice
+            // Los agregados con mas muestras pesan mas en el total global, pero con
+            // rendimientos decrecientes para que un unico curso o grupo no monopolice
             // el resultado general del alumno.
-            BigDecimal peso = calcularPeso(totalCurso.getNumMuestras());
+            BigDecimal peso = calcularPeso(totalFuente.getNumMuestras());
 
             if (peso.compareTo(ZERO) <= 0) {
                 continue;
@@ -136,18 +178,18 @@ public class SoftSkillTotalService {
         return BigDecimal.valueOf(Math.sqrt(muestras));
     }
 
-    private long sumarMuestras(List<TotalSoftSkillPorAlumnoCurso> totalesPorCurso) {
+    private long sumarMuestras(List<? extends SoftSkillTotalizable> totalesFuente) {
         long total = 0L;
-        for (TotalSoftSkillPorAlumnoCurso totalCurso : totalesPorCurso) {
-            total += totalCurso.getNumMuestras() != null ? totalCurso.getNumMuestras() : 0L;
+        for (SoftSkillTotalizable totalFuente : totalesFuente) {
+            total += totalFuente.getNumMuestras() != null ? totalFuente.getNumMuestras() : 0L;
         }
         return total;
     }
 
-    private long sumarIncidencias(List<TotalSoftSkillPorAlumnoCurso> totalesPorCurso) {
+    private long sumarIncidencias(List<? extends SoftSkillTotalizable> totalesFuente) {
         long total = 0L;
-        for (TotalSoftSkillPorAlumnoCurso totalCurso : totalesPorCurso) {
-            total += totalCurso.getNumIncidencias() != null ? totalCurso.getNumIncidencias() : 0L;
+        for (SoftSkillTotalizable totalFuente : totalesFuente) {
+            total += totalFuente.getNumIncidencias() != null ? totalFuente.getNumIncidencias() : 0L;
         }
         return total;
     }
