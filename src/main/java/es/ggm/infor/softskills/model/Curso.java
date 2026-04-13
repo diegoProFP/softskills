@@ -25,6 +25,10 @@ public class Curso {
     @JoinColumn(name = "PROFESOR_ID")
     private Profesor profesor;
 
+    @ManyToOne
+    @JoinColumn(name = "GRUPO_ACADEMICO_ID")
+    private Grupo grupoAcademico;
+
     @ManyToMany
     @JoinTable(
             name = "CURSO_ALUMNO",
@@ -54,6 +58,9 @@ public class Curso {
     @Transient
     private boolean registradoSk;
 
+    @Column(name = "IDNUMBER")
+    private String idNumber;
+
     @Column(name = "FECHA_ALTA")
     private LocalDateTime fechaAlta;
 
@@ -72,6 +79,14 @@ public class Curso {
 
     public void setProfesor(Profesor profesor) {
         this.profesor = profesor;
+    }
+
+    public Grupo getGrupoAcademico() {
+        return grupoAcademico;
+    }
+
+    public void setGrupoAcademico(Grupo grupoAcademico) {
+        this.grupoAcademico = grupoAcademico;
     }
 
     public List<Alumno> getAlumnos() {
@@ -120,6 +135,14 @@ public class Curso {
 
     public void setRegistradoSk(boolean registradoSk) {
         this.registradoSk = registradoSk;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
     }
 
     public LocalDateTime getFechaAlta() {

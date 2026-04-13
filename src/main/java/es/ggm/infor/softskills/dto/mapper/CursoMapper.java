@@ -16,5 +16,13 @@ public interface CursoMapper {
     @Mapping(source = "fullname", target = "nombreLargo")
     @Mapping(source = "displayname", target = "nombreVisible")
     void updateFromDto(CursoMoodleDTO dto, @MappingTarget Curso curso);
-}
 
+    @AfterMapping
+    default void mapIdNumber(CursoMoodleDTO dto, @MappingTarget Curso curso) {
+        aplicarIdNumberEnCurso(dto.idnumber, curso);
+    }
+
+    default void aplicarIdNumberEnCurso(String idNumber, Curso curso) {
+        curso.setIdNumber(idNumber);
+    }
+}

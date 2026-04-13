@@ -48,6 +48,9 @@ public class CursoService implements ICursoService {
     @Autowired
     private final TotalSoftSkillPorAlumnoCursoRepository totalSoftSkillPorAlumnoCursoRepository;
 
+    @Autowired
+    private final GrupoService grupoService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
 
@@ -65,6 +68,11 @@ public class CursoService implements ICursoService {
                 .id(cursoId)
                 .profesor(profesor)
                 .build();
+
+        CursoMoodleDTO detallesCurso = moodleClient.getInfoCurso(token, cursoId);
+        cursoMapper.updateFromDto(detallesCurso, curso);
+        cursoMapper.aplicarIdNumberEnCurso(detallesCurso.idnumber, curso);
+        grupoService.resolverGrupoDesdeCurso(curso);
 
         List<AlumnoMoodleDTO> alumnosMoodle = moodleClient.getAlumnos(token, cursoId);
 
@@ -113,6 +121,8 @@ public class CursoService implements ICursoService {
             } else {
                 curso = cursoMapper.fromDto(dto);
             }
+            cursoMapper.aplicarIdNumberEnCurso(dto.idnumber, curso);
+            grupoService.resolverGrupoDesdeCurso(curso);
             resultado.add(curso);
         }
         return resultado;
@@ -158,6 +168,8 @@ public class CursoService implements ICursoService {
     private void rellenarDetallesCurso(String token, Long cursoId, Curso curso) throws GeneralMoodleException {
         CursoMoodleDTO detallesCursoMoodle = moodleClient.getInfoCurso(token, cursoId);
         cursoMapper.updateFromDto(detallesCursoMoodle, curso);
+        cursoMapper.aplicarIdNumberEnCurso(detallesCursoMoodle.idnumber, curso);
+        grupoService.resolverGrupoDesdeCurso(curso);
     }
 
     private void rellenarTotalesPorSkill(Curso curso) {
