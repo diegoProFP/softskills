@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class AlumnoResumenService {
             List<SoftSkill> softSkills = softSkillService.getAllSoftSkills();
 
             Map<Long, AlumnoConTotalesDTO> resumenMap = new LinkedHashMap<>();
+            Map<Long, Map<Long, java.math.BigDecimal>> puntuacionesPorAlumno = new HashMap<>();
 
             for (Alumno alumno : alumnos) {
                 AlumnoConTotalesDTO dto = new AlumnoConTotalesDTO();
@@ -40,16 +42,18 @@ public class AlumnoResumenService {
             for (TotalSoftSkillPorAlumno total : totales) {
                 AlumnoConTotalesDTO dto = resumenMap.get(total.getAlumno().getId());
                 if (dto != null) {
-                    dto.getTotalesPorSkill().put(
-                            total.getSoftSkill().getNombre(),
-                            total.getPuntuacionTotal()
-                    );
+                    puntuacionesPorAlumno
+                            .computeIfAbsent(total.getAlumno().getId(), ignored -> new LinkedHashMap<>())
+                            .put(total.getSoftSkill().getId(), total.getPuntuacionTotal());
                 }
             }
 
             for (AlumnoConTotalesDTO dto : resumenMap.values()) {
                 dto.setTotalesPorSkill(
-                        totalesPorDefectoService.completarConMaximosPorDefecto(dto.getTotalesPorSkill(), softSkills)
+                        totalesPorDefectoService.construirTotales(
+                                softSkills,
+                                puntuacionesPorAlumno.get(dto.getId())
+                        )
                 );
             }
 

@@ -10,9 +10,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 // Servicio para obtener un alumno con sus totales
 @Service
@@ -34,11 +34,11 @@ public class AlumnoDetalleService {
         dto.setId(alumno.getId());
         dto.setNombre(alumno.getNombre());
 
-        Map<String, java.math.BigDecimal> totalesPorSkill = new LinkedHashMap<>();
+        Map<Long, java.math.BigDecimal> totalesPorSkill = new LinkedHashMap<>();
         for (TotalSoftSkillPorAlumno total : totales) {
-            totalesPorSkill.put(total.getSoftSkill().getNombre(), total.getPuntuacionTotal());
+            totalesPorSkill.put(total.getSoftSkill().getId(), total.getPuntuacionTotal());
         }
-        dto.setTotalesPorSkill(totalesPorDefectoService.completarConMaximosPorDefecto(totalesPorSkill, softSkills));
+        dto.setTotalesPorSkill(totalesPorDefectoService.construirTotales(softSkills, totalesPorSkill));
 
         return dto;
     }

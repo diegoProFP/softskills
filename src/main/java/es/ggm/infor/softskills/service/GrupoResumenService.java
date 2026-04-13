@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ public class GrupoResumenService {
 
         List<TotalSoftSkillPorAlumnoGrupo> totales = totalSoftSkillPorAlumnoGrupoRepository.findByGrupo(grupoAcademico);
         Map<Long, AlumnoConTotalesDTO> resumenMap = new LinkedHashMap<>();
+        Map<Long, Map<Long, java.math.BigDecimal>> puntuacionesPorAlumno = new HashMap<>();
 
         Map<Long, AlumnoMoodleDTO> alumnosMoodlePorId = obtenerDatosAlumnosGrupo(token, grupoAcademico.getId());
         Collection<SoftSkill> softSkillsDelGrupo = obtenerSoftSkillsDelGrupo(grupoAcademico.getId());
@@ -64,15 +66,17 @@ public class GrupoResumenService {
                 return nuevo;
             });
 
-            dto.getTotalesPorSkill().put(
-                    total.getSoftSkill().getNombre(),
-                    total.getPuntuacionTotal()
-            );
+            puntuacionesPorAlumno
+                    .computeIfAbsent(alumnoId, ignored -> new LinkedHashMap<>())
+                    .put(total.getSoftSkill().getId(), total.getPuntuacionTotal());
         }
 
         for (AlumnoConTotalesDTO dto : resumenMap.values()) {
             dto.setTotalesPorSkill(
-                    totalesPorDefectoService.completarConMaximosPorDefecto(dto.getTotalesPorSkill(), softSkillsDelGrupo)
+                    totalesPorDefectoService.construirTotales(
+                            softSkillsDelGrupo,
+                            puntuacionesPorAlumno.get(dto.getId())
+                    )
             );
         }
 

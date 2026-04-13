@@ -1,14 +1,12 @@
 package es.ggm.infor.softskills.dto;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-// DTO para detalle de un alumno con mapa de soft skills
 public class AlumnoConTotalesDTO {
     private Long id;
     private String nombre;
-    private Map<String, BigDecimal> totalesPorSkill = new HashMap<>();
+    private List<SoftSkillTotalDTO> totalesPorSkill = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -26,11 +24,11 @@ public class AlumnoConTotalesDTO {
         this.nombre = nombre;
     }
 
-    public Map<String, BigDecimal> getTotalesPorSkill() {
+    public List<SoftSkillTotalDTO> getTotalesPorSkill() {
         return totalesPorSkill;
     }
 
-    public void setTotalesPorSkill(Map<String, BigDecimal> totalesPorSkill) {
+    public void setTotalesPorSkill(List<SoftSkillTotalDTO> totalesPorSkill) {
         this.totalesPorSkill = totalesPorSkill;
     }
 
@@ -42,7 +40,4 @@ public class AlumnoConTotalesDTO {
                 ", totalesPorSkill=" + totalesPorSkill +
                 '}';
     }
-
-
-    // getters y setters
 }
