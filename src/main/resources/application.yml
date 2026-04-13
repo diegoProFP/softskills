@@ -6,6 +6,10 @@ moodle:
 soft-skills:
   login-manual: true
   token-manual: d43e1b3e723b9df3c3aee5adc416a537
+  ranking:
+    #mode: WEIGHTED_AVERAGE_WITH_CONFIDENCE
+    mode: WEIGHTED_AVERAGE
+    confidence-target-samples: 20
 
 jwt:
   secret: mi_clave_super_secreta_para_firmar

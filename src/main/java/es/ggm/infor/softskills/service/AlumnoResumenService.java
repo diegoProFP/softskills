@@ -4,11 +4,13 @@ import es.ggm.infor.softskills.dao.AlumnoRepository;
 import es.ggm.infor.softskills.dao.TotalSoftSkillRepository;
 import es.ggm.infor.softskills.dto.AlumnoConTotalesDTO;
 import es.ggm.infor.softskills.model.Alumno;
+import es.ggm.infor.softskills.model.SoftSkill;
 import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumno;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +20,17 @@ public class AlumnoResumenService {
     @Autowired
     private AlumnoRepository alumnoRepository;
     @Autowired private TotalSoftSkillRepository totalRepository;
+    @Autowired private ISoftSkillService softSkillService;
+    @Autowired private TotalesPorDefectoService totalesPorDefectoService;
 
     public List<AlumnoConTotalesDTO> obtenerResumenGeneral() {
 
             List<Alumno> alumnos = alumnoRepository.findAll();
             List<TotalSoftSkillPorAlumno> totales = totalRepository.findAll();
+            List<SoftSkill> softSkills = softSkillService.getAllSoftSkills();
 
             Map<Long, AlumnoConTotalesDTO> resumenMap = new LinkedHashMap<>();
+            Map<Long, Map<Long, java.math.BigDecimal>> puntuacionesPorAlumno = new HashMap<>();
 
             for (Alumno alumno : alumnos) {
                 AlumnoConTotalesDTO dto = new AlumnoConTotalesDTO();
@@ -36,11 +42,19 @@ public class AlumnoResumenService {
             for (TotalSoftSkillPorAlumno total : totales) {
                 AlumnoConTotalesDTO dto = resumenMap.get(total.getAlumno().getId());
                 if (dto != null) {
-                    dto.getTotalesPorSkill().put(
-                            total.getSoftSkill().getNombre(),
-                            total.getPuntuacionTotal()
-                    );
+                    puntuacionesPorAlumno
+                            .computeIfAbsent(total.getAlumno().getId(), ignored -> new LinkedHashMap<>())
+                            .put(total.getSoftSkill().getId(), total.getPuntuacionTotal());
                 }
+            }
+
+            for (AlumnoConTotalesDTO dto : resumenMap.values()) {
+                dto.setTotalesPorSkill(
+                        totalesPorDefectoService.construirTotales(
+                                softSkills,
+                                puntuacionesPorAlumno.get(dto.getId())
+                        )
+                );
             }
 
             return new ArrayList<>(resumenMap.values());

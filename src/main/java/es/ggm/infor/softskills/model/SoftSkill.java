@@ -34,6 +34,12 @@ public class SoftSkill {
     @Builder.Default
     private TipoMedicionSoftSkill tipoMedicion = TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS;
 
+    // Prioridad del ranking: 1 es la skill mas critica. Cuanto mayor es el valor,
+    // menor peso tiene en la media ponderada. Por defecto se considera importancia media.
+    @Column(name = "PRIORIDAD_RANKING", nullable = false)
+    @Builder.Default
+    private Integer prioridadRanking = 3;
+
     @OneToMany
     private List<MotivosSoftSkill> listaMotivos;
 

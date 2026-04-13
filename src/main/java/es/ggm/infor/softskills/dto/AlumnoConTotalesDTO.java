@@ -1,14 +1,16 @@
 package es.ggm.infor.softskills.dto;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-// DTO para detalle de un alumno con mapa de soft skills
 public class AlumnoConTotalesDTO {
     private Long id;
     private String nombre;
-    private Map<String, BigDecimal> totalesPorSkill = new HashMap<>();
+    private List<SoftSkillTotalDTO> totalesPorSkill = new ArrayList<>();
+    private BigDecimal rankingScore;
+    private Integer posicionRanking;
+    private Long numMuestrasTotales;
 
     public Long getId() {
         return id;
@@ -26,12 +28,36 @@ public class AlumnoConTotalesDTO {
         this.nombre = nombre;
     }
 
-    public Map<String, BigDecimal> getTotalesPorSkill() {
+    public List<SoftSkillTotalDTO> getTotalesPorSkill() {
         return totalesPorSkill;
     }
 
-    public void setTotalesPorSkill(Map<String, BigDecimal> totalesPorSkill) {
+    public void setTotalesPorSkill(List<SoftSkillTotalDTO> totalesPorSkill) {
         this.totalesPorSkill = totalesPorSkill;
+    }
+
+    public BigDecimal getRankingScore() {
+        return rankingScore;
+    }
+
+    public void setRankingScore(BigDecimal rankingScore) {
+        this.rankingScore = rankingScore;
+    }
+
+    public Integer getPosicionRanking() {
+        return posicionRanking;
+    }
+
+    public void setPosicionRanking(Integer posicionRanking) {
+        this.posicionRanking = posicionRanking;
+    }
+
+    public Long getNumMuestrasTotales() {
+        return numMuestrasTotales;
+    }
+
+    public void setNumMuestrasTotales(Long numMuestrasTotales) {
+        this.numMuestrasTotales = numMuestrasTotales;
     }
 
     @Override
@@ -40,9 +66,9 @@ public class AlumnoConTotalesDTO {
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", totalesPorSkill=" + totalesPorSkill +
+                ", rankingScore=" + rankingScore +
+                ", posicionRanking=" + posicionRanking +
+                ", numMuestrasTotales=" + numMuestrasTotales +
                 '}';
     }
-
-
-    // getters y setters
 }

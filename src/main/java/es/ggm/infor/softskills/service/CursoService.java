@@ -51,6 +51,9 @@ public class CursoService implements ICursoService {
     @Autowired
     private final GrupoService grupoService;
 
+    @Autowired
+    private final TotalesPorDefectoService totalesPorDefectoService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
 
@@ -185,17 +188,20 @@ public class CursoService implements ICursoService {
         List<TotalSoftSkillPorAlumnoCurso> totales = totalSoftSkillPorAlumnoCursoRepository
                 .findByCursoIdAndAlumnoIdIn(curso.getId(), alumnoIds);
 
-        Map<Long, Map<String, BigDecimal>> totalesPorAlumno = new HashMap<>();
+        Map<Long, Map<Long, BigDecimal>> totalesPorAlumno = new HashMap<>();
         for (TotalSoftSkillPorAlumnoCurso total : totales) {
             totalesPorAlumno
                     .computeIfAbsent(total.getAlumno().getId(), ignored -> new LinkedHashMap<>())
-                    .put(total.getSoftSkill().getNombre(), total.getPuntuacionTotal());
+                    .put(total.getSoftSkill().getId(), total.getPuntuacionTotal());
         }
 
         for (Alumno alumno : alumnos) {
-            alumno.setTotalesPorSkill(new LinkedHashMap<>(
-                    totalesPorAlumno.getOrDefault(alumno.getId(), Collections.emptyMap())
-            ));
+            alumno.setTotalesPorSkill(
+                    totalesPorDefectoService.construirTotales(
+                            curso.getSoftSkills(),
+                            totalesPorAlumno.getOrDefault(alumno.getId(), Collections.emptyMap())
+                    )
+            );
         }
     }
 }
