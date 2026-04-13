@@ -12,5 +12,7 @@ import java.util.List;
 public interface SoftSkillRepository extends JpaRepository<SoftSkill, Long> {
     @Query("SELECT s FROM SoftSkill s JOIN s.cursos c WHERE c.id = :cursoId")
     List<SoftSkill> findByCursoId(@Param("cursoId") Long cursoId);
-    
+
+    @Query("SELECT DISTINCT s FROM SoftSkill s JOIN s.cursos c WHERE c.grupoAcademico.id = :grupoId")
+    List<SoftSkill> findByGrupoId(@Param("grupoId") Long grupoId);
 }

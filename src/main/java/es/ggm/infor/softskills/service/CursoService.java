@@ -51,6 +51,9 @@ public class CursoService implements ICursoService {
     @Autowired
     private final GrupoService grupoService;
 
+    @Autowired
+    private final TotalesPorDefectoService totalesPorDefectoService;
+
 
     private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
 
@@ -193,9 +196,12 @@ public class CursoService implements ICursoService {
         }
 
         for (Alumno alumno : alumnos) {
-            alumno.setTotalesPorSkill(new LinkedHashMap<>(
-                    totalesPorAlumno.getOrDefault(alumno.getId(), Collections.emptyMap())
-            ));
+            alumno.setTotalesPorSkill(
+                    totalesPorDefectoService.completarConMaximosPorDefecto(
+                            totalesPorAlumno.getOrDefault(alumno.getId(), Collections.emptyMap()),
+                            curso.getSoftSkills()
+                    )
+            );
         }
     }
 }
