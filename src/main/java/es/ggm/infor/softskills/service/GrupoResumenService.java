@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class GrupoResumenService {
     private final SoftSkillRepository softSkillRepository;
     private final IMoodleClient moodleClient;
     private final TotalesPorDefectoService totalesPorDefectoService;
+    private final RankingCalculationService rankingCalculationService;
 
     public List<AlumnoConTotalesDTO> obtenerResumenGrupo(String token, String nivel, String cicloFormativo,
                                                          String grupo, String cursoEscolar) throws GeneralMoodleException {
@@ -43,6 +45,7 @@ public class GrupoResumenService {
         List<TotalSoftSkillPorAlumnoGrupo> totales = totalSoftSkillPorAlumnoGrupoRepository.findByGrupo(grupoAcademico);
         Map<Long, AlumnoConTotalesDTO> resumenMap = new LinkedHashMap<>();
         Map<Long, Map<Long, java.math.BigDecimal>> puntuacionesPorAlumno = new HashMap<>();
+        Map<Long, Map<Long, Long>> muestrasPorAlumno = new HashMap<>();
 
         Map<Long, AlumnoMoodleDTO> alumnosMoodlePorId = obtenerDatosAlumnosGrupo(token, grupoAcademico.getId());
         Collection<SoftSkill> softSkillsDelGrupo = obtenerSoftSkillsDelGrupo(grupoAcademico.getId());
@@ -69,6 +72,10 @@ public class GrupoResumenService {
             puntuacionesPorAlumno
                     .computeIfAbsent(alumnoId, ignored -> new LinkedHashMap<>())
                     .put(total.getSoftSkill().getId(), total.getPuntuacionTotal());
+
+            muestrasPorAlumno
+                    .computeIfAbsent(alumnoId, ignored -> new LinkedHashMap<>())
+                    .put(total.getSoftSkill().getId(), total.getNumMuestras() != null ? total.getNumMuestras() : 0L);
         }
 
         for (AlumnoConTotalesDTO dto : resumenMap.values()) {
@@ -78,9 +85,28 @@ public class GrupoResumenService {
                             puntuacionesPorAlumno.get(dto.getId())
                     )
             );
+            Map<Long, Long> muestrasPorSkill = muestrasPorAlumno.get(dto.getId());
+            dto.setNumMuestrasTotales(rankingCalculationService.sumarMuestras(muestrasPorSkill));
+            dto.setRankingScore(
+                    rankingCalculationService.calcularRankingScore(
+                            softSkillsDelGrupo,
+                            dto.getTotalesPorSkill(),
+                            muestrasPorSkill
+                    )
+            );
         }
 
-        return new ArrayList<>(resumenMap.values());
+        List<AlumnoConTotalesDTO> ranking = new ArrayList<>(resumenMap.values());
+        ranking.sort(
+                Comparator.comparing(AlumnoConTotalesDTO::getRankingScore, Comparator.nullsLast(Comparator.reverseOrder()))
+                        .thenComparing(AlumnoConTotalesDTO::getNombre, Comparator.nullsLast(String::compareToIgnoreCase))
+        );
+
+        for (int i = 0; i < ranking.size(); i++) {
+            ranking.get(i).setPosicionRanking(i + 1);
+        }
+
+        return ranking;
     }
 
     private Map<Long, AlumnoMoodleDTO> obtenerDatosAlumnosGrupo(String token, Long grupoId) throws GeneralMoodleException {
