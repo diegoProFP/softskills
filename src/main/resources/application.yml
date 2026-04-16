@@ -4,7 +4,7 @@ moodle:
   cursos-actuales: false
 
 soft-skills:
-  login-manual: true
+  login-manual: false
   token-manual: d43e1b3e723b9df3c3aee5adc416a537
   ranking:
     #mode: WEIGHTED_AVERAGE_WITH_CONFIDENCE

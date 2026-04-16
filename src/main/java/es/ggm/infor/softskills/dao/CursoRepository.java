@@ -12,4 +12,7 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
     List<Curso> findByProfesor_Id(Long idProfesor);
     List<Curso> findByGrupoAcademico_Id(Long grupoAcademicoId);
     Optional<Curso> findFirstByGrupoAcademico_Id(Long grupoAcademicoId);
+    Optional<Curso> findFirstByAlumnos_Id(Long alumnoId);
+    Optional<Curso> findFirstByProfesor_IdAndAlumnos_Id(Long profesorId, Long alumnoId);
+    boolean existsByProfesor_IdAndAlumnos_Id(Long profesorId, Long alumnoId);
 }

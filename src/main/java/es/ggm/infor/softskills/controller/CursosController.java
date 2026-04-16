@@ -1,20 +1,12 @@
 package es.ggm.infor.softskills.controller;
 
-import es.ggm.infor.moodleintegration.client.MoodleClient;
-import es.ggm.infor.moodleintegration.dto.CursoMoodleDTO;
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
-import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
-import es.ggm.infor.softskills.service.CursoService;
 import es.ggm.infor.softskills.service.ICursoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping(MainController.BASE_PATH + "/cursos")
 public class CursosController extends MainController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CursosController.class);
 
     private final ICursoService cursoService;
 
@@ -38,71 +28,30 @@ public class CursosController extends MainController {
     @GetMapping
     @PreAuthorize("hasRole('TEACHER')")
     public ResponseEntity<?> getCursosUsuario() {
-       
-        List<CursoMoodleDTO> cursos = null;
-        List<Curso> cursosDelProfesor = null;
-        try {
-            UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
-            String token = authenticatedUserService.getAuthenticatedToken();
-
-            cursosDelProfesor = cursoService.getCursosDelProfesor(token, usuario.getUserid());
-
-            return ResponseEntity.ok(cursosDelProfesor);
-        } catch (Exception e) {
-            logger.error("Error al obtener los cursos del usuario: {}", e.getMessage());
-            return ResponseEntity.internalServerError().body("Error al obtener los cursos: " + e.getMessage());
-
-        }
-
+        UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
+        String token = authenticatedUserService.getAuthenticatedToken();
+        List<Curso> cursosDelProfesor = cursoService.getCursosDelProfesor(token, usuario.getUserid());
+        return ResponseEntity.ok(cursosDelProfesor);
     }
 
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> getCurso(@PathVariable String id) {
-
-
-        try {
-            // Obtener usuario autenticado y token
-            UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
-            String token = authenticatedUserService.getAuthenticatedToken();
-
-            // Llamar al servicio para registrar el curso
-            Curso recuperado = cursoService.obtenerCursoConAlumnos(token, Long.parseLong(id));
-
-            return ResponseEntity.ok(recuperado);
-        } catch (GeneralMoodleException e) {
-            logger.error("Error al registrar el curso con ID {}: {}", id, e.getMessage());
-            return ResponseEntity.internalServerError().body("Error al registrar el curso: " + e.getMessage());
-        } catch (Exception e) {
-            logger.error("Error inesperado al consultar el curso con ID {}: {}", id, e.getMessage());
-            return ResponseEntity.internalServerError().body("Error inesperado: " + e.getMessage());
-        }
+    public ResponseEntity<?> getCurso(@PathVariable String id) throws GeneralMoodleException {
+        UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
+        String token = authenticatedUserService.getAuthenticatedToken();
+        Curso recuperado = cursoService.obtenerCursoConAlumnos(token, Long.parseLong(id));
+        return ResponseEntity.ok(recuperado);
     }
 
 
     @PostMapping("/{id}/registrar")
     @PreAuthorize("hasRole('TEACHER')")
-    public ResponseEntity<?> registrarCurso(@PathVariable Long id) {
-        try {
-            // Obtener usuario autenticado y token
-            UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
-            String token = authenticatedUserService.getAuthenticatedToken();
-
-            // Llamar al servicio para registrar el curso
-            cursoService.registrarCurso(token, id, usuario.getUserid());
-
-            return ResponseEntity.ok("Curso registrado correctamente");
-        }catch (CursoYaRegistradoException e) {
-            logger.error("El curso con ID {} ya ha sido registrado: {}", id, e.getMessage());
-            return ResponseEntity.badRequest().body("El curso ya ha sido registrado: " + e.getMessage());
-        } catch (GeneralMoodleException e) {
-            logger.error("Error al registrar el curso con ID {}: {}", id, e.getMessage());
-            return ResponseEntity.internalServerError().body("Error al registrar el curso: " + e.getMessage());
-        } catch (Exception e) {
-            logger.error("Error inesperado al registrar el curso con ID {}: {}", id, e.getMessage());
-            return ResponseEntity.internalServerError().body("Error inesperado: " + e.getMessage());
-        }
+    public ResponseEntity<?> registrarCurso(@PathVariable Long id) throws GeneralMoodleException {
+        UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
+        String token = authenticatedUserService.getAuthenticatedToken();
+        cursoService.registrarCurso(token, id, usuario.getUserid());
+        return ResponseEntity.ok("Curso registrado correctamente");
     }
 
 }

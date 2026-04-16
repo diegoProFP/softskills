@@ -10,6 +10,7 @@ import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoCursoRepository;
 import es.ggm.infor.softskills.dto.mapper.AlumnoMapper;
 import es.ggm.infor.softskills.dto.mapper.CursoMapper;
 import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
+import es.ggm.infor.softskills.exception.GrupoNoResueltoException;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Profesor;
@@ -75,7 +76,13 @@ public class CursoService implements ICursoService {
         CursoMoodleDTO detallesCurso = moodleClient.getInfoCurso(token, cursoId);
         cursoMapper.updateFromDto(detallesCurso, curso);
         cursoMapper.aplicarIdNumberEnCurso(detallesCurso.idnumber, curso);
-        grupoService.resolverGrupoDesdeCurso(curso);
+        if (grupoService.resolverGrupoDesdeCurso(curso) == null) {
+            String mensaje = "No se ha podido enlazar el curso con ningún grupo. idNumber recibido: "
+                    + (detallesCurso.idnumber == null ? "<vacío>" : detallesCurso.idnumber)
+                    + ". Formato esperado: nivel_ciclo_grupo_cursoEscolar o nivel_ciclo_grupo_cursoEscolar_sufijo.";
+            logger.error("Error al registrar el curso {}: {}", cursoId, mensaje);
+            throw new GrupoNoResueltoException(mensaje);
+        }
 
         List<AlumnoMoodleDTO> alumnosMoodle = moodleClient.getAlumnos(token, cursoId);
 
