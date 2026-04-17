@@ -6,6 +6,8 @@ import es.ggm.infor.softskills.model.Alumno;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ public class AlumnoService implements IAlumnoService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public List<Alumno> insertarAlumnosSiNoExisten(List<AlumnoMoodleDTO> alumnosMoodle) {
         List<Long> idsMoodle = alumnosMoodle.stream().map(dto -> dto.id).toList();
 

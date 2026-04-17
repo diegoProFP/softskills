@@ -10,7 +10,7 @@ public interface ICursoService {
 
 //    List<Curso> getCursos();
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     void registrarCurso(String token, Long cursoId, Long idProfesor) throws GeneralMoodleException;
 
     /**

@@ -40,8 +40,11 @@ public class SoftSkillsController {
             return ResponseEntity.ok(respuesta);
 
         } catch (Exception e) {
-            log.error("Error al grabar la muestra: {}", e.getMessage());
-            SKResponse respuesta = SKResponse.builder().exito(false).mensaje("Error al grabar la muestra: " + e.getMessage()).build();
+            log.error("Error al grabar la muestra", e);
+            SKResponse respuesta = SKResponse.builder()
+                    .exito(false)
+                    .mensaje("Se ha producido un error al grabar la muestra, consulte a su administrador.")
+                    .build();
             return ResponseEntity.internalServerError().body(respuesta);
 
         }

@@ -60,7 +60,7 @@ public class CursoService implements ICursoService {
 
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void registrarCurso(String token, Long cursoId, Long idProfesor) throws GeneralMoodleException {
 
         if (cursoRepository.existsById(cursoId)) {
