@@ -40,4 +40,6 @@ public class TotalSoftSkillPorAlumnoCurso implements SoftSkillTotalizable {
 
     @Builder.Default
     private Long numIncidencias = 0L;
+
+    private BigDecimal evidenciaAcumulada;
 }

@@ -7,6 +7,7 @@ import es.ggm.infor.softskills.dto.MuestraRequest;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.MuestraSoftSkill;
+import es.ggm.infor.softskills.model.NivelMuestraSoftSkill;
 import es.ggm.infor.softskills.model.Profesor;
 import es.ggm.infor.softskills.model.SoftSkill;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,9 @@ public class SoftSkillService implements ISoftSkillService {
         }
 
         Profesor profesor = Profesor.builder().id(request.getProfesorId()).build();
+        NivelMuestraSoftSkill nivel = request.getNivel() != null
+                ? request.getNivel()
+                : NivelMuestraSoftSkill.NORMAL;
 
         MuestraSoftSkill muestra = MuestraSoftSkill.builder()
                 .curso(curso)
@@ -68,6 +72,8 @@ public class SoftSkillService implements ISoftSkillService {
                 .profesor(profesor)
                 .softSkill(softSkill)
                 .valor(request.getValor())
+                .nivel(nivel)
+                .pesoNivel(nivel.getPeso())
                 .fecha(LocalDateTime.now())
                 .build();
 

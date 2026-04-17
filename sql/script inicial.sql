@@ -3,7 +3,8 @@
 
 INSERT INTO softskills_db.soft_skill (id,descripcion,nombre,tipo,TIPO_MEDICION,CODIGO,PRIORIDAD_RANKING) VALUES
 	 (1,'Permite medir cómo maneja el alumno las distracciones','Enfoque y concentración',0,NULL,'ENFOQUE_DISTRACCIONES',3),
-	 (2,'Mide la puntualidad del alumno','Puntualidad',0,NULL,'PUNTUALIDAD',3);
+	 (2,'Mide la puntualidad del alumno','Puntualidad',0,NULL,'PUNTUALIDAD',3),
+	 (3,'Mide la participacion positiva del alumno','Participacion',0,'ACUMULACION_SATURADA','PARTICIPACION',3);
 INSERT INTO softskills_db.profesor (ID) VALUES
 	 (1445),
 	 (1446),

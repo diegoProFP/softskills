@@ -33,5 +33,7 @@ import java.math.BigDecimal;
     @Builder.Default
     private Long numIncidencias = 0L;
 
+    private BigDecimal evidenciaAcumulada;
+
     // getters y setters
 }
