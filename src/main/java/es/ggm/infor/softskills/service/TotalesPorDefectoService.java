@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class TotalesPorDefectoService {
 
     private static final BigDecimal MAXIMO_POR_DEFECTO = new BigDecimal("10.00");
+    private static final BigDecimal MINIMO_POR_DEFECTO = BigDecimal.ZERO;
 
     public Map<Long, BigDecimal> completarConMaximosPorDefecto(Map<Long, BigDecimal> totalesExistentes,
                                                                Collection<SoftSkill> softSkills) {
@@ -49,6 +50,7 @@ public class TotalesPorDefectoService {
             dto.setCodigo(softSkill.getCodigo() != null ? softSkill.getCodigo().name() : null);
             dto.setNombre(softSkill.getNombre());
             dto.setDescripcion(softSkill.getDescripcion());
+            dto.setTipoMedicion(resolverTipoMedicion(softSkill).name());
             dto.setPuntuacionTotal(puntuacion);
             resultado.add(dto);
         }
@@ -67,13 +69,19 @@ public class TotalesPorDefectoService {
                 continue;
             }
 
-            TipoMedicionSoftSkill tipoMedicion = softSkill.getTipoMedicion() != null
-                    ? softSkill.getTipoMedicion()
-                    : TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS;
+            TipoMedicionSoftSkill tipoMedicion = resolverTipoMedicion(softSkill);
 
             if (tipoMedicion == TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS) {
                 totales.putIfAbsent(softSkill.getId(), MAXIMO_POR_DEFECTO);
+            } else if (tipoMedicion == TipoMedicionSoftSkill.ACUMULACION_SATURADA) {
+                totales.putIfAbsent(softSkill.getId(), MINIMO_POR_DEFECTO);
             }
         }
+    }
+
+    private TipoMedicionSoftSkill resolverTipoMedicion(SoftSkill softSkill) {
+        return softSkill.getTipoMedicion() != null
+                ? softSkill.getTipoMedicion()
+                : TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS;
     }
 }

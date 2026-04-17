@@ -15,4 +15,8 @@ public interface SoftSkillTotalizable {
     Long getNumIncidencias();
 
     void setNumIncidencias(Long numIncidencias);
+
+    BigDecimal getEvidenciaAcumulada();
+
+    void setEvidenciaAcumulada(BigDecimal evidenciaAcumulada);
 }

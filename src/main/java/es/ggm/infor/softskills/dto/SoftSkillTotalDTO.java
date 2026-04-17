@@ -7,6 +7,7 @@ public class SoftSkillTotalDTO {
     private String codigo;
     private String nombre;
     private String descripcion;
+    private String tipoMedicion;
     private BigDecimal puntuacionTotal;
 
     public Long getId() {
@@ -39,6 +40,14 @@ public class SoftSkillTotalDTO {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getTipoMedicion() {
+        return tipoMedicion;
+    }
+
+    public void setTipoMedicion(String tipoMedicion) {
+        this.tipoMedicion = tipoMedicion;
     }
 
     public BigDecimal getPuntuacionTotal() {

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 // ========== ENTIDAD MUESTRA SOFT SKILL ==========
 @Entity
@@ -39,6 +40,14 @@ public class MuestraSoftSkill {
 
     @Column(name = "VALOR")
     private int valor; // 1 positivo, -1 negativox
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "NIVEL")
+    @Builder.Default
+    private NivelMuestraSoftSkill nivel = NivelMuestraSoftSkill.NORMAL;
+
+    @Column(name = "PESO_NIVEL")
+    private BigDecimal pesoNivel;
 
     @Column(name = "COMENTARIO")
     private String motivoComentario;

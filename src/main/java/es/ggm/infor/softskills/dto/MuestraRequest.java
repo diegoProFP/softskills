@@ -1,5 +1,6 @@
 package es.ggm.infor.softskills.dto;
 
+import es.ggm.infor.softskills.model.NivelMuestraSoftSkill;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,5 @@ public class MuestraRequest {
     private Long alumnoId;
     private Long softSkillId;
     private int valor; // 1 o -1
+    private NivelMuestraSoftSkill nivel;
 }

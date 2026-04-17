@@ -119,6 +119,7 @@ public class SoftSkillTotalService {
         totalDestino.setPuntuacionTotal(acotarPuntuacion(puntuacionObjetivo));
         totalDestino.setNumMuestras(sumarMuestras(totalesFuente));
         totalDestino.setNumIncidencias(sumarIncidencias(totalesFuente));
+        totalDestino.setEvidenciaAcumulada(sumarEvidencias(totalesFuente));
     }
 
     private void recalcularTotalGlobal(TotalSoftSkillPorAlumno totalGlobal,
@@ -139,6 +140,7 @@ public class SoftSkillTotalService {
         totalGlobal.setPuntuacionTotal(acotarPuntuacion(nuevaPuntuacion));
         totalGlobal.setNumMuestras(sumarMuestras(totalesFuente));
         totalGlobal.setNumIncidencias(sumarIncidencias(totalesFuente));
+        totalGlobal.setEvidenciaAcumulada(sumarEvidencias(totalesFuente));
     }
 
     private BigDecimal calcularObjetivoGlobal(List<? extends SoftSkillTotalizable> totalesFuente) {
@@ -190,6 +192,16 @@ public class SoftSkillTotalService {
         long total = 0L;
         for (SoftSkillTotalizable totalFuente : totalesFuente) {
             total += totalFuente.getNumIncidencias() != null ? totalFuente.getNumIncidencias() : 0L;
+        }
+        return total;
+    }
+
+    private BigDecimal sumarEvidencias(List<? extends SoftSkillTotalizable> totalesFuente) {
+        BigDecimal total = ZERO;
+        for (SoftSkillTotalizable totalFuente : totalesFuente) {
+            if (totalFuente.getEvidenciaAcumulada() != null) {
+                total = total.add(totalFuente.getEvidenciaAcumulada());
+            }
         }
         return total;
     }
