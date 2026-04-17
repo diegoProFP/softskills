@@ -49,6 +49,6 @@ public class MuestraSoftSkill {
     @Column(name = "PESO_NIVEL")
     private BigDecimal pesoNivel;
 
-    @Column(name = "COMENTARIO")
-    private String motivoComentario;
+    @Column(name = "MOTIVO", length = 500)
+    private String motivo;
 }

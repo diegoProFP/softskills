@@ -40,7 +40,8 @@ public class SoftSkill {
     @Builder.Default
     private Integer prioridadRanking = 3;
 
-    @OneToMany
+    @OneToMany(mappedBy = "softSkill")
+    @OrderBy("motivo ASC")
     private List<MotivosSoftSkill> listaMotivos;
 
     @JsonIgnore
