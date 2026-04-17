@@ -4,6 +4,8 @@ import es.ggm.infor.softskills.dao.GrupoRepository;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Grupo;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GrupoService {
 
     private final GrupoRepository grupoRepository;
+    private static final Logger logger = LoggerFactory.getLogger(GrupoService.class);
 
     @Transactional
     public Grupo resolverGrupoDesdeCurso(Curso curso) {
@@ -43,11 +46,13 @@ public class GrupoService {
 
     private GrupoDatos extraerGrupoDatos(String idNumber) {
         if (idNumber == null || idNumber.isBlank()) {
+            logger.error("No se puede resolver el grupo: el idNumber del curso está vacío o ausente");
             return null;
         }
 
         String[] partes = idNumber.split("_");
-        if (partes.length != 4) {
+        if (partes.length < 4) {
+            logger.error("No se puede resolver el grupo para el idNumber '{}': formato inválido", idNumber);
             return null;
         }
 

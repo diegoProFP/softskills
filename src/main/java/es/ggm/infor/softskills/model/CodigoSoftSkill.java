@@ -10,5 +10,6 @@ public enum CodigoSoftSkill {
     RESPONSABILIDAD,
     GESTION_EMOCIONAL,
     RESOLUCION_DE_PROBLEMAS,
-    RESPETO
+    RESPETO,
+    PUNTUALIDAD;
 }
