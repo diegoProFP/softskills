@@ -2,6 +2,7 @@ package es.ggm.infor.softskills.service;
 
 import es.ggm.infor.softskills.config.RankingMode;
 import es.ggm.infor.softskills.config.RankingProperties;
+import es.ggm.infor.softskills.dto.AlumnoConTotalesDTO;
 import es.ggm.infor.softskills.dto.SoftSkillTotalDTO;
 import es.ggm.infor.softskills.model.SoftSkill;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +43,29 @@ public class RankingCalculationService {
                 MATH_CONTEXT
         );
         return mediaPonderada.multiply(multiplicador, MATH_CONTEXT).setScale(4, RoundingMode.HALF_UP);
+    }
+
+    public void ordenarYAsignarPosiciones(List<AlumnoConTotalesDTO> ranking) {
+        if (ranking == null || ranking.isEmpty()) {
+            return;
+        }
+
+        ranking.sort(
+                Comparator.comparing(AlumnoConTotalesDTO::getRankingScore, Comparator.nullsLast(Comparator.reverseOrder()))
+                        .thenComparing(AlumnoConTotalesDTO::getNombre, Comparator.nullsLast(String::compareToIgnoreCase))
+                        .thenComparing(AlumnoConTotalesDTO::getId, Comparator.nullsLast(Comparator.naturalOrder()))
+        );
+
+        BigDecimal puntuacionAnterior = null;
+        int posicionActual = 0;
+        for (int i = 0; i < ranking.size(); i++) {
+            BigDecimal puntuacionActual = ranking.get(i).getRankingScore();
+            if (i == 0 || !mismaPuntuacionRanking(puntuacionAnterior, puntuacionActual)) {
+                posicionActual = i + 1;
+                puntuacionAnterior = puntuacionActual;
+            }
+            ranking.get(i).setPosicionRanking(posicionActual);
+        }
     }
 
     BigDecimal calcularMediaPonderada(Collection<SoftSkill> softSkills, List<SoftSkillTotalDTO> totalesPorSkill) {
@@ -108,5 +133,12 @@ public class RankingCalculationService {
     private BigDecimal calcularPeso(Integer prioridadRanking) {
         int prioridad = prioridadRanking == null || prioridadRanking <= 0 ? 3 : prioridadRanking;
         return BigDecimal.ONE.divide(BigDecimal.valueOf(prioridad), 8, RoundingMode.HALF_UP);
+    }
+
+    private boolean mismaPuntuacionRanking(BigDecimal izquierda, BigDecimal derecha) {
+        if (izquierda == null || derecha == null) {
+            return izquierda == derecha;
+        }
+        return izquierda.compareTo(derecha) == 0;
     }
 }

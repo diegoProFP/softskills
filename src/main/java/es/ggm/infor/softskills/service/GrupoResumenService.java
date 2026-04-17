@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -97,14 +96,7 @@ public class GrupoResumenService {
         }
 
         List<AlumnoConTotalesDTO> ranking = new ArrayList<>(resumenMap.values());
-        ranking.sort(
-                Comparator.comparing(AlumnoConTotalesDTO::getRankingScore, Comparator.nullsLast(Comparator.reverseOrder()))
-                        .thenComparing(AlumnoConTotalesDTO::getNombre, Comparator.nullsLast(String::compareToIgnoreCase))
-        );
-
-        for (int i = 0; i < ranking.size(); i++) {
-            ranking.get(i).setPosicionRanking(i + 1);
-        }
+        rankingCalculationService.ordenarYAsignarPosiciones(ranking);
 
         return ranking;
     }
