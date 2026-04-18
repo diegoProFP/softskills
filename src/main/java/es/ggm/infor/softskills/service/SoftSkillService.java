@@ -74,6 +74,7 @@ public class SoftSkillService implements ISoftSkillService {
                 .valor(request.getValor())
                 .nivel(nivel)
                 .pesoNivel(nivel.getPeso())
+                .motivo(normalizarMotivo(request.getMotivo()))
                 .fecha(LocalDateTime.now())
                 .build();
 
@@ -85,5 +86,13 @@ public class SoftSkillService implements ISoftSkillService {
     @Override
     public List<SoftSkill> getSoftSkillsByCursoId(Long cursoId) {
         return softSkillRepository.findByCursoId(cursoId);
+    }
+
+    private String normalizarMotivo(String motivo) {
+        if (motivo == null) {
+            return null;
+        }
+        String motivoNormalizado = motivo.trim();
+        return motivoNormalizado.isEmpty() ? null : motivoNormalizado;
     }
 }

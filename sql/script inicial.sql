@@ -10,5 +10,5 @@ INSERT INTO softskills_db.profesor (ID) VALUES
 	 (1446),
 	 (2312),
 	 (2927);
-INSERT INTO softskills_db.motivo_soft_skill (id,motivo) VALUES
-	 (1,'No ha traido el cuaderno');
+INSERT INTO softskills_db.motivo_soft_skill (id,motivo,SOFT_SKILL_ID) VALUES
+	 (1,'No ha traido el cuaderno',1);
