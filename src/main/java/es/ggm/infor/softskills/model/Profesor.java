@@ -1,6 +1,7 @@
 package es.ggm.infor.softskills.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -11,6 +12,9 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @ToString
 public class Profesor extends Usuario{
+
+    @Column(name = "ADMINISTRADOR", nullable = false)
+    private boolean administrador;
 
     public Profesor() {
         super();

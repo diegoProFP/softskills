@@ -5,10 +5,10 @@ INSERT INTO softskills_db.soft_skill (id,descripcion,nombre,tipo,TIPO_MEDICION,C
 	 (1,'Permite medir cómo maneja el alumno las distracciones','Enfoque y concentración',0,NULL,'ENFOQUE_DISTRACCIONES',3),
 	 (2,'Mide la puntualidad del alumno','Puntualidad',0,NULL,'PUNTUALIDAD',3),
 	 (3,'Mide la participacion positiva del alumno','Participacion',0,'ACUMULACION_SATURADA','PARTICIPACION',3);
-INSERT INTO softskills_db.profesor (ID) VALUES
-	 (1445),
-	 (1446),
-	 (2312),
-	 (2927);
+INSERT INTO softskills_db.profesor (ID,ADMINISTRADOR) VALUES
+	 (1445,0),
+	 (1446,0),
+	 (2312,0),
+	 (2927,0);
 INSERT INTO softskills_db.motivo_soft_skill (id,motivo,SOFT_SKILL_ID) VALUES
 	 (1,'No ha traido el cuaderno',1);

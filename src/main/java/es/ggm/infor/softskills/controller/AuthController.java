@@ -17,12 +17,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.crypto.SecretKey;
+import java.util.List;
 
 
 @RestController
@@ -58,8 +60,11 @@ public class AuthController extends MainController{
 
             String token = JwtUtils.generateToken(authentication, userInfo, secretKey);
 
+            List<String> roles = authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
 
-            LoginResponse respuestaLogin = LoginResponse.builder().token(token).datosUsuario(userInfo).exito(true).build();
+            LoginResponse respuestaLogin = LoginResponse.builder().token(token).datosUsuario(userInfo).roles(roles).exito(true).build();
 
             logger.info("Usuario logado: " + userInfo.getFullname() + "| Token: " + token + " MoodleToken: " + moodleToken);
             return ResponseEntity.ok(respuestaLogin);
