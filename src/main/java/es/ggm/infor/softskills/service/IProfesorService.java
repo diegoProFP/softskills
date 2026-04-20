@@ -8,4 +8,8 @@ public interface IProfesorService {
     List<Profesor> getAllProfesores();
 
     Profesor getProfesorById(Long id);
+
+    Profesor crearProfesor(Profesor profesor);
+
+    Profesor actualizarProfesor(Long id, boolean administrador);
 }

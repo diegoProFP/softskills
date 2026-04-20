@@ -3,12 +3,14 @@ package es.ggm.infor.softskills.controller;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
 import es.ggm.infor.softskills.exception.GrupoNoResueltoException;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -33,6 +35,22 @@ public class ApiExceptionHandler {
     public ResponseEntity<String> handleEntityNotFound(EntityNotFoundException e) {
         logger.error("Recurso no encontrado", e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se ha encontrado el recurso solicitado.");
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<String> handleEntityExists(EntityExistsException e) {
+        logger.error("Recurso duplicado", e);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("El recurso ya existe.");
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidation(MethodArgumentNotValidException e) {
+        logger.error("Solicitud no valida", e);
+        String mensaje = e.getBindingResult().getFieldErrors().stream()
+                .findFirst()
+                .map(error -> error.getDefaultMessage())
+                .orElse("La solicitud no es valida.");
+        return ResponseEntity.badRequest().body(mensaje);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
