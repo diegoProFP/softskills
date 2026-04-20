@@ -53,6 +53,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.badRequest().body(mensaje);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
+        logger.error("Solicitud no valida", e);
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
         logger.error("Acceso denegado", e);
