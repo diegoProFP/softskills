@@ -2,6 +2,7 @@ package es.ggm.infor.softskills.service;
 
 
 import es.ggm.infor.softskills.dto.MuestraRequest;
+import es.ggm.infor.softskills.dto.AdminSoftSkillRequest;
 import es.ggm.infor.softskills.model.SoftSkill;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ public interface ISoftSkillService {
     void insertarMuestra(MuestraRequest request);
 
     List<SoftSkill> getSoftSkillsByCursoId(Long cursoId);
+
+    @Transactional
+    SoftSkill actualizarSoftSkill(Long id, AdminSoftSkillRequest request);
     // void saveSoftSkill(SoftSkill softSkill);
     // void deleteSoftSkill(Long id);
 }

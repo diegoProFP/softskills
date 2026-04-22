@@ -4,6 +4,7 @@ import es.ggm.infor.moodleintegration.client.IMoodleClient;
 import es.ggm.infor.moodleintegration.dto.MoodleLoginResponse;
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
+import es.ggm.infor.softskills.model.Profesor;
 import es.ggm.infor.softskills.service.ProfesorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -14,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -57,11 +59,16 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
             }
 
             // Consultar si el userId existe en la base de datos como profesor
-            boolean isProfesor = profesorService.getProfesorById(userInfo.getUserid()) != null;
+            Profesor profesor = profesorService.getProfesorById(userInfo.getUserid());
+            boolean isProfesor = profesor != null;
+            boolean isAdministrador = profesor != null && profesor.isAdministrador();
 
-            List<SimpleGrantedAuthority> authorities = isProfesor
-                    ? List.of(new SimpleGrantedAuthority("ROLE_TEACHER"))
-                    : List.of(new SimpleGrantedAuthority("ROLE_STUDENT"));
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            authorities.add(new SimpleGrantedAuthority(isProfesor ? "ROLE_TEACHER" : "ROLE_STUDENT"));
+
+            if (isAdministrador) {
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            }
 
             UsernamePasswordAuthenticationToken tokenAuth = new UsernamePasswordAuthenticationToken(loginResponse.token, null, authorities);
 

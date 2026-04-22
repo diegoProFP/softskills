@@ -2,16 +2,23 @@ package es.ggm.infor.softskills.service;
 
 import es.ggm.infor.softskills.dao.CursoRepository;
 import es.ggm.infor.softskills.dao.MuestraSoftSkillRepository;
+import es.ggm.infor.softskills.dao.MotivosSoftSkillRepository;
 import es.ggm.infor.softskills.dao.SoftSkillRepository;
+import es.ggm.infor.softskills.dto.AdminSoftSkillRequest;
+import es.ggm.infor.softskills.dto.MotivoSoftSkillDTO;
 import es.ggm.infor.softskills.dto.MuestraRequest;
 import es.ggm.infor.softskills.model.Alumno;
+import es.ggm.infor.softskills.model.CodigoSoftSkill;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.MuestraSoftSkill;
+import es.ggm.infor.softskills.model.MotivosSoftSkill;
 import es.ggm.infor.softskills.model.NivelMuestraSoftSkill;
 import es.ggm.infor.softskills.model.SoftSkill;
+import es.ggm.infor.softskills.model.TipoMedicionSoftSkill;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +42,8 @@ class SoftSkillServiceTest {
                 cursoRepository,
                 alumnoService,
                 muestraRepository,
-                softSkillTotalService
+                softSkillTotalService,
+                mock(MotivosSoftSkillRepository.class)
         );
 
         Alumno alumno = Alumno.builder().id(10L).build();
@@ -62,5 +70,66 @@ class SoftSkillServiceTest {
         verify(muestraRepository).save(captor.capture());
         verify(softSkillTotalService).aplicarNuevaMuestra(captor.getValue());
         assertEquals("Interrumpe al equipo", captor.getValue().getMotivo());
+    }
+
+    @Test
+    void actualizarSoftSkillSincronizaDatosYMotivos() {
+        SoftSkillRepository softSkillRepository = mock(SoftSkillRepository.class);
+        MotivosSoftSkillRepository motivosSoftSkillRepository = mock(MotivosSoftSkillRepository.class);
+        SoftSkillService service = new SoftSkillService(
+                softSkillRepository,
+                mock(CursoRepository.class),
+                mock(IAlumnoService.class),
+                mock(MuestraSoftSkillRepository.class),
+                mock(SoftSkillTotalService.class),
+                motivosSoftSkillRepository
+        );
+
+        SoftSkill softSkill = SoftSkill.builder()
+                .id(30L)
+                .nombre("Anterior")
+                .descripcion("Descripcion anterior")
+                .tipoMedicion(TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS)
+                .codigo(CodigoSoftSkill.GENERICA)
+                .listaMotivos(new ArrayList<>())
+                .build();
+        softSkill.getListaMotivos().add(MotivosSoftSkill.builder()
+                .id(1L)
+                .motivo("Motivo antiguo")
+                .softSkill(softSkill)
+                .build());
+        softSkill.getListaMotivos().add(MotivosSoftSkill.builder()
+                .id(2L)
+                .motivo("Motivo a eliminar")
+                .softSkill(softSkill)
+                .build());
+
+        AdminSoftSkillRequest request = AdminSoftSkillRequest.builder()
+                .nombre(" Participacion ")
+                .descripcion("  Suma participaciones positivas  ")
+                .tipoMedicion(TipoMedicionSoftSkill.ACUMULACION_SATURADA)
+                .codigo(CodigoSoftSkill.PARTICIPACION)
+                .listaMotivos(List.of(
+                        MotivoSoftSkillDTO.builder().id(1L).motivo("  Ayuda al equipo  ").build(),
+                        MotivoSoftSkillDTO.builder().motivo("Propone soluciones").build()
+                ))
+                .build();
+
+        when(softSkillRepository.findByIdWithMotivos(softSkill.getId())).thenReturn(Optional.of(softSkill));
+        when(motivosSoftSkillRepository.findMaxId()).thenReturn(Optional.of(2L));
+        when(softSkillRepository.save(any(SoftSkill.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        SoftSkill resultado = service.actualizarSoftSkill(softSkill.getId(), request);
+
+        assertEquals("Participacion", resultado.getNombre());
+        assertEquals("Suma participaciones positivas", resultado.getDescripcion());
+        assertEquals(TipoMedicionSoftSkill.ACUMULACION_SATURADA, resultado.getTipoMedicion());
+        assertEquals(CodigoSoftSkill.PARTICIPACION, resultado.getCodigo());
+        assertEquals(2, resultado.getListaMotivos().size());
+        assertEquals(1L, resultado.getListaMotivos().get(0).getId());
+        assertEquals("Ayuda al equipo", resultado.getListaMotivos().get(0).getMotivo());
+        assertEquals(3L, resultado.getListaMotivos().get(1).getId());
+        assertEquals("Propone soluciones", resultado.getListaMotivos().get(1).getMotivo());
+        verify(softSkillRepository).save(softSkill);
     }
 }

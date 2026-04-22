@@ -40,7 +40,7 @@ public class SoftSkill {
     @Builder.Default
     private Integer prioridadRanking = 3;
 
-    @OneToMany(mappedBy = "softSkill")
+    @OneToMany(mappedBy = "softSkill", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("motivo ASC")
     private List<MotivosSoftSkill> listaMotivos;
 
