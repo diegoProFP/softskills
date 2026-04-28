@@ -2,6 +2,7 @@ package es.ggm.infor.softskills.controller;
 
 
 import es.ggm.infor.softskills.dto.AlumnoConTotalesDTO;
+import es.ggm.infor.softskills.dto.DetalleMuestrasSoftSkillAlumnoDTO;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
 import es.ggm.infor.softskills.service.AlumnoDetalleService;
 import es.ggm.infor.softskills.service.AlumnoResumenService;
@@ -61,6 +62,35 @@ public class AlumnoController extends MainController{
     @GetMapping("/{id}")
     public AlumnoConTotalesDTO getAlumnoConTotales(@PathVariable Long id) {
         return detalleService.obtenerDetalleAlumno(id);
+    }
+
+    @GetMapping("/{idAlumno}/soft-skills/{idSoftSkill}/muestras")
+    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER')")
+    public ResponseEntity<?> getMuestrasPorSoftSkill(@PathVariable Long idAlumno,
+                                                     @PathVariable Long idSoftSkill,
+                                                     Authentication authentication) {
+        try {
+            boolean isTeacher = authentication.getAuthorities().stream()
+                    .anyMatch(authority -> "ROLE_TEACHER".equals(authority.getAuthority()));
+            boolean isStudent = authentication.getAuthorities().stream()
+                    .anyMatch(authority -> "ROLE_STUDENT".equals(authority.getAuthority()));
+
+            DetalleMuestrasSoftSkillAlumnoDTO detalle = detalleService.obtenerMuestrasPorSoftSkill(
+                    idAlumno,
+                    idSoftSkill,
+                    authenticatedUserService.getAuthenticatedUser(),
+                    authenticatedUserService.getAuthenticatedToken(),
+                    isTeacher,
+                    isStudent
+            );
+            return ResponseEntity.ok(detalle);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error al obtener las muestras de la soft skill");
+        }
     }
 
 }

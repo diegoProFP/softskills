@@ -6,13 +6,19 @@ import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.dao.AlumnoRepository;
 import es.ggm.infor.softskills.dao.CursoRepository;
+import es.ggm.infor.softskills.dao.MuestraSoftSkillRepository;
 import es.ggm.infor.softskills.dao.SoftSkillRepository;
 import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoGrupoRepository;
 import es.ggm.infor.softskills.dao.TotalSoftSkillRepository;
 import es.ggm.infor.softskills.dto.AlumnoConTotalesDTO;
+import es.ggm.infor.softskills.dto.DetalleMuestrasSoftSkillAlumnoDTO;
+import es.ggm.infor.softskills.dto.MuestraSoftSkillDetalleDTO;
+import es.ggm.infor.softskills.dto.MuestrasPorCursoDTO;
+import es.ggm.infor.softskills.dto.SoftSkillResumenDTO;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Grupo;
+import es.ggm.infor.softskills.model.MuestraSoftSkill;
 import es.ggm.infor.softskills.model.SoftSkill;
 import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumno;
 import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumnoGrupo;
@@ -40,6 +46,7 @@ public class AlumnoDetalleService {
     private final ISoftSkillService softSkillService;
     private final TotalesPorDefectoService totalesPorDefectoService;
     private final CursoRepository cursoRepository;
+    private final MuestraSoftSkillRepository muestraSoftSkillRepository;
     private final SoftSkillRepository softSkillRepository;
     private final TotalSoftSkillPorAlumnoGrupoRepository totalSoftSkillPorAlumnoGrupoRepository;
     private final IMoodleClient moodleClient;
@@ -62,6 +69,31 @@ public class AlumnoDetalleService {
         }
         dto.setTotalesPorSkill(totalesPorDefectoService.construirTotales(softSkills, totalesPorSkill));
 
+        return dto;
+    }
+
+    public DetalleMuestrasSoftSkillAlumnoDTO obtenerMuestrasPorSoftSkill(Long idAlumno,
+                                                                         Long idSoftSkill,
+                                                                         UsuarioMoodleDTO usuarioAutenticado,
+                                                                         String token,
+                                                                         boolean isTeacher,
+                                                                         boolean isStudent) throws GeneralMoodleException {
+        Alumno alumno = alumnoRepository.findById(idAlumno)
+                .orElseThrow(() -> new EntityNotFoundException("Alumno no encontrado"));
+        SoftSkill softSkill = softSkillRepository.findById(idSoftSkill)
+                .orElseThrow(() -> new EntityNotFoundException("Soft skill no encontrada"));
+
+        validarAcceso(idAlumno, usuarioAutenticado, isTeacher, isStudent);
+
+        List<MuestraSoftSkill> muestras = muestraSoftSkillRepository
+                .findByAlumno_IdAndSoftSkill_IdOrderByFechaDesc(idAlumno, idSoftSkill);
+
+        DetalleMuestrasSoftSkillAlumnoDTO dto = new DetalleMuestrasSoftSkillAlumnoDTO();
+        dto.setAlumnoId(alumno.getId());
+        dto.setAlumnoNombre(resolverNombreAlumno(alumno, idAlumno, usuarioAutenticado, token, isTeacher));
+        dto.setSoftSkill(construirSoftSkillResumen(softSkill));
+        dto.setNumMuestras((long) muestras.size());
+        dto.setCursos(agruparMuestrasPorCurso(muestras));
         return dto;
     }
 
@@ -230,5 +262,48 @@ public class AlumnoDetalleService {
             }
         }
         return alumnosGrupo;
+    }
+
+    private SoftSkillResumenDTO construirSoftSkillResumen(SoftSkill softSkill) {
+        SoftSkillResumenDTO dto = new SoftSkillResumenDTO();
+        dto.setId(softSkill.getId());
+        dto.setCodigo(softSkill.getCodigo() != null ? softSkill.getCodigo().name() : null);
+        dto.setNombre(softSkill.getNombre());
+        dto.setDescripcion(softSkill.getDescripcion());
+        dto.setTipoMedicion(softSkill.getTipoMedicion() != null ? softSkill.getTipoMedicion().name() : null);
+        return dto;
+    }
+
+    private List<MuestrasPorCursoDTO> agruparMuestrasPorCurso(List<MuestraSoftSkill> muestras) {
+        Map<Long, MuestrasPorCursoDTO> muestrasPorCurso = new LinkedHashMap<>();
+
+        for (MuestraSoftSkill muestra : muestras) {
+            Curso curso = muestra.getCurso();
+            Long cursoId = curso != null ? curso.getId() : null;
+            MuestrasPorCursoDTO cursoDto = muestrasPorCurso.computeIfAbsent(cursoId, ignored -> {
+                MuestrasPorCursoDTO nuevo = new MuestrasPorCursoDTO();
+                nuevo.setCursoId(cursoId);
+                nuevo.setCursoNombre(null);
+                nuevo.setNumMuestras(0L);
+                return nuevo;
+            });
+
+            cursoDto.getMuestras().add(construirMuestraDetalle(muestra));
+            cursoDto.setNumMuestras(cursoDto.getNumMuestras() + 1L);
+        }
+
+        return new ArrayList<>(muestrasPorCurso.values());
+    }
+
+    private MuestraSoftSkillDetalleDTO construirMuestraDetalle(MuestraSoftSkill muestra) {
+        MuestraSoftSkillDetalleDTO dto = new MuestraSoftSkillDetalleDTO();
+        dto.setId(muestra.getId());
+        dto.setFecha(muestra.getFecha());
+        dto.setValor(muestra.getValor());
+        dto.setNivel(muestra.getNivel() != null ? muestra.getNivel().name() : null);
+        dto.setPesoNivel(muestra.getPesoNivel());
+        dto.setMotivo(muestra.getMotivo());
+        dto.setProfesorId(muestra.getProfesor() != null ? muestra.getProfesor().getId() : null);
+        return dto;
     }
 }

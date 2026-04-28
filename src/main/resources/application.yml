@@ -6,6 +6,9 @@ moodle:
 soft-skills:
   login-manual: false
   token-manual: d43e1b3e723b9df3c3aee5adc416a537
+  bootstrap:
+    reference-data:
+      enabled: true
   ranking:
     #mode: WEIGHTED_AVERAGE_WITH_CONFIDENCE
     mode: WEIGHTED_AVERAGE
