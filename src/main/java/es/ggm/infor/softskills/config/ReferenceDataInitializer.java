@@ -68,8 +68,8 @@ public class ReferenceDataInitializer implements ApplicationRunner {
                 3
         );
 
-        ensureProfesor(1445L, false);
-        ensureProfesor(1446L, false);
+        ensureProfesor(1445L, true);
+        ensureProfesor(1446L, true);
     }
 
     private SoftSkill ensureSoftSkill(CodigoSoftSkill codigo,

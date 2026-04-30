@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data // Incluye getters, setters, toString, equals y hashCode
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -45,7 +45,6 @@ public class Curso {
     )
     private List<SoftSkill> softSkills = new ArrayList<>();
 
-
     @Transient
     private String nombreCorto;
 
@@ -57,6 +56,9 @@ public class Curso {
 
     @Transient
     private boolean registradoSk;
+
+    @Transient
+    private boolean registrableEnSoftSkills;
 
     @Column(name = "IDNUMBER")
     private String idNumber;
@@ -135,6 +137,14 @@ public class Curso {
 
     public void setRegistradoSk(boolean registradoSk) {
         this.registradoSk = registradoSk;
+    }
+
+    public boolean isRegistrableEnSoftSkills() {
+        return registrableEnSoftSkills;
+    }
+
+    public void setRegistrableEnSoftSkills(boolean registrableEnSoftSkills) {
+        this.registrableEnSoftSkills = registrableEnSoftSkills;
     }
 
     public String getIdNumber() {

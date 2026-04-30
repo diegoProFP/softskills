@@ -23,11 +23,13 @@ public class GrupoService {
         }
 
         if (curso.getGrupoAcademico() != null) {
+            curso.setRegistrableEnSoftSkills(true);
             return curso.getGrupoAcademico();
         }
 
         GrupoDatos grupoDatos = extraerGrupoDatos(curso.getIdNumber());
         if (grupoDatos == null) {
+            curso.setRegistrableEnSoftSkills(false);
             return null;
         }
 
@@ -41,19 +43,42 @@ public class GrupoService {
                 .build()));
 
         curso.setGrupoAcademico(grupo);
+        curso.setRegistrableEnSoftSkills(true);
         return grupo;
+    }
+
+    public boolean puedeRegistrarseEnSoftSkills(Curso curso) {
+        if (curso == null) {
+            return false;
+        }
+
+        if (curso.getGrupoAcademico() != null) {
+            curso.setRegistrableEnSoftSkills(true);
+            return true;
+        }
+
+        boolean registrable = extraerGrupoDatos(curso.getIdNumber()) != null;
+        curso.setRegistrableEnSoftSkills(registrable);
+        return registrable;
     }
 
     private GrupoDatos extraerGrupoDatos(String idNumber) {
         if (idNumber == null || idNumber.isBlank()) {
-            logger.error("No se puede resolver el grupo: el idNumber del curso está vacío o ausente");
+            logger.error("No se puede resolver el grupo: el idNumber del curso esta vacio o ausente");
             return null;
         }
 
         String[] partes = idNumber.split("_");
         if (partes.length < 4) {
-            logger.error("No se puede resolver el grupo para el idNumber '{}': formato inválido", idNumber);
+            logger.error("No se puede resolver el grupo para el idNumber '{}': formato invalido", idNumber);
             return null;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (partes[i] == null || partes[i].isBlank()) {
+                logger.error("No se puede resolver el grupo para el idNumber '{}': faltan segmentos obligatorios", idNumber);
+                return null;
+            }
         }
 
         return new GrupoDatos(

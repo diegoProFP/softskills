@@ -16,7 +16,7 @@ import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Profesor;
 import es.ggm.infor.softskills.model.SoftSkill;
 import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumnoCurso;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,25 +39,18 @@ public class CursoService implements ICursoService {
     private final IMoodleClient moodleClient;
     @Autowired
     private final IAlumnoService alumnoService;
-
     @Autowired
     private final ISoftSkillService softSkillService;
-
     @Autowired
     private final AlumnoMapper alumnoMapper;
-
     @Autowired
     private final TotalSoftSkillPorAlumnoCursoRepository totalSoftSkillPorAlumnoCursoRepository;
-
     @Autowired
     private final GrupoService grupoService;
-
     @Autowired
     private final TotalesPorDefectoService totalesPorDefectoService;
 
-
     private static final Logger logger = LoggerFactory.getLogger(CursoService.class);
-
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -76,36 +69,26 @@ public class CursoService implements ICursoService {
         CursoMoodleDTO detallesCurso = moodleClient.getInfoCurso(token, cursoId);
         cursoMapper.updateFromDto(detallesCurso, curso);
         cursoMapper.aplicarIdNumberEnCurso(detallesCurso.idnumber, curso);
-        if (grupoService.resolverGrupoDesdeCurso(curso) == null) {
-            String mensaje = "No se ha podido enlazar el curso con ningún grupo. idNumber recibido: "
-                    + (detallesCurso.idnumber == null ? "<vacío>" : detallesCurso.idnumber)
-                    + ". Formato esperado: nivel_ciclo_grupo_cursoEscolar o nivel_ciclo_grupo_cursoEscolar_sufijo.";
-            logger.error("Error al registrar el curso {}: {}", cursoId, mensaje);
-            throw new GrupoNoResueltoException(mensaje);
-        }
+        validarCursoRegistrable(curso, cursoId, detallesCurso.idnumber);
+        grupoService.resolverGrupoDesdeCurso(curso);
 
         List<AlumnoMoodleDTO> alumnosMoodle = moodleClient.getAlumnos(token, cursoId);
-
-        // Filtrar alumnos que no coincidan con el id del profesor
-//        alumnosMoodle.removeIf(alumno -> alumno.id.equals(idProfesor));
-
-        alumnosMoodle = alumnosMoodle.stream().filter(alumno -> !alumno.id.equals(idProfesor)).collect(Collectors.toList());
+        alumnosMoodle = alumnosMoodle.stream()
+                .filter(alumno -> !alumno.id.equals(idProfesor))
+                .collect(Collectors.toList());
 
         List<Alumno> alumnos = alumnoService.insertarAlumnosSiNoExisten(alumnosMoodle);
         curso.setAlumnos(alumnos);
 
-        // Añadir todas las soft skills existentes
         List<SoftSkill> todasLasSoftSkills = softSkillService.getAllSoftSkills();
         curso.setSoftSkills(todasLasSoftSkills);
 
         cursoRepository.save(curso);
     }
 
-
     @Override
     public List<Curso> getCursosDelProfesor(String token, Long idProfesor) {
-        // Cursos en Moodle
-        List<CursoMoodleDTO> cursosMoodle = null;
+        List<CursoMoodleDTO> cursosMoodle;
         try {
             cursosMoodle = moodleClient.getCursos(token, idProfesor);
         } catch (GeneralMoodleException e) {
@@ -113,7 +96,6 @@ public class CursoService implements ICursoService {
             throw new RuntimeException(e);
         }
 
-        // Cursos en la BD
         List<Curso> cursosBD = cursoRepository.findByProfesor_Id(idProfesor);
         Map<Long, Curso> cursosBDMap = new HashMap<>();
         for (Curso curso : cursosBD) {
@@ -126,12 +108,13 @@ public class CursoService implements ICursoService {
         for (CursoMoodleDTO dto : cursosMoodle) {
             Curso curso = cursosBDMap.get(dto.id);
             if (curso != null) {
-                //Actualizo la info que viene de Moodle
                 cursoMapper.updateFromDto(dto, curso);
             } else {
                 curso = cursoMapper.fromDto(dto);
             }
+
             cursoMapper.aplicarIdNumberEnCurso(dto.idnumber, curso);
+            grupoService.puedeRegistrarseEnSoftSkills(curso);
             grupoService.resolverGrupoDesdeCurso(curso);
             resultado.add(curso);
         }
@@ -158,14 +141,7 @@ public class CursoService implements ICursoService {
         }
 
         rellenarTotalesPorSkill(curso);
-
         curso.getAlumnos().sort(Comparator.comparing(Alumno::getNombre));
-
-        // Recuperar y asignar las soft skills al curso
-//        List<SoftSkill> softSkills = softSkillService.getSoftSkillsByCursoId(cursoId);
-//        curso.setSoftSkills(softSkills);
-
-
         return curso;
     }
 
@@ -179,7 +155,20 @@ public class CursoService implements ICursoService {
         CursoMoodleDTO detallesCursoMoodle = moodleClient.getInfoCurso(token, cursoId);
         cursoMapper.updateFromDto(detallesCursoMoodle, curso);
         cursoMapper.aplicarIdNumberEnCurso(detallesCursoMoodle.idnumber, curso);
+        grupoService.puedeRegistrarseEnSoftSkills(curso);
         grupoService.resolverGrupoDesdeCurso(curso);
+    }
+
+    private void validarCursoRegistrable(Curso curso, Long cursoId, String idNumberRecibido) {
+        if (grupoService.puedeRegistrarseEnSoftSkills(curso)) {
+            return;
+        }
+
+        String mensaje = "No se ha podido enlazar el curso con ningun grupo. idNumber recibido: "
+                + (idNumberRecibido == null ? "<vacio>" : idNumberRecibido)
+                + ". Formato esperado: nivel_ciclo_grupo_cursoEscolar o nivel_ciclo_grupo_cursoEscolar_sufijo.";
+        logger.error("Error al registrar el curso {}: {}", cursoId, mensaje);
+        throw new GrupoNoResueltoException(mensaje);
     }
 
     private void rellenarTotalesPorSkill(Curso curso) {
