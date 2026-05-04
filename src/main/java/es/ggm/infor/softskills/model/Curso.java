@@ -63,7 +63,7 @@ public class Curso {
     @Column(name = "IDNUMBER")
     private String idNumber;
 
-    @Column(name = "FECHA_ALTA")
+    @Column(name = "FECHA_ALTA", columnDefinition = "datetime")
     private LocalDateTime fechaAlta;
 
 

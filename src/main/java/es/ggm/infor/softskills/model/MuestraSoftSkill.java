@@ -35,7 +35,7 @@ public class MuestraSoftSkill {
     @JoinColumn(name = "PROFESOR_ID")
     private Profesor profesor;
 
-    @Column(name = "FECHA")
+    @Column(name = "FECHA", columnDefinition = "datetime")
     private LocalDateTime fecha;
 
     @Column(name = "VALOR")

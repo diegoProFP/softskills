@@ -14,7 +14,10 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"alumno_id", "curso_id", "softSkill_id"}))
+@Table(
+        name = "TOTAL_SOFT_SKILL_POR_ALUMNO_CURSO",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"alumno_id", "curso_id", "softSkill_id"})
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
