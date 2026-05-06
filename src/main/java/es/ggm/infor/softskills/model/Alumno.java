@@ -20,6 +20,12 @@ public class Alumno extends Usuario{
     private String nombre;
 
     @Transient
+    private String apellidos;
+
+    @Transient
+    private String nombreCompleto;
+
+    @Transient
     private String username;
 
     @Transient
@@ -42,6 +48,22 @@ public class Alumno extends Usuario{
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
+    }
+
+    public String getNombreCompleto() {
+        return nombreCompleto;
+    }
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
     }
 
     public String getUsername() {

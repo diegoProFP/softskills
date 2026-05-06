@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.Collator;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -141,7 +142,7 @@ public class CursoService implements ICursoService {
         }
 
         rellenarTotalesPorSkill(curso);
-        curso.getAlumnos().sort(Comparator.comparing(Alumno::getNombre));
+        curso.getAlumnos().sort(comparadorAlumnosPorApellido());
         return curso;
     }
 
@@ -199,5 +200,23 @@ public class CursoService implements ICursoService {
                     )
             );
         }
+    }
+
+    private Comparator<Alumno> comparadorAlumnosPorApellido() {
+        Collator collator = Collator.getInstance(new Locale("es", "ES"));
+        collator.setStrength(Collator.PRIMARY);
+
+        Comparator<String> comparadorTexto = Comparator.nullsLast(collator::compare);
+        return Comparator
+                .comparing((Alumno alumno) -> normalizarOrdenacion(alumno.getApellidos()), comparadorTexto)
+                .thenComparing(alumno -> normalizarOrdenacion(alumno.getNombre()), comparadorTexto)
+                .thenComparing(alumno -> normalizarOrdenacion(alumno.getNombreCompleto()), comparadorTexto);
+    }
+
+    private String normalizarOrdenacion(String valor) {
+        if (valor == null || valor.isBlank()) {
+            return null;
+        }
+        return valor.trim();
     }
 }

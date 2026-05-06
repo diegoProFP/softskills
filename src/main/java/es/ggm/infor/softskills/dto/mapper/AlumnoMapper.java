@@ -9,7 +9,9 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AlumnoMapper {
-    @Mapping(source = "fullname", target = "nombre")
+    @Mapping(source = "firstname", target = "nombre")
+    @Mapping(source = "lastname", target = "apellidos")
+    @Mapping(source = "fullname", target = "nombreCompleto")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "email", target = "email")
     void updateFromDto(AlumnoMoodleDTO dto, @MappingTarget Alumno alumno);
