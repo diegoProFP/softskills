@@ -7,12 +7,12 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CursoMapper {
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "shortname", target = "nombreCorto")
+    @Mapping(source = "shortname", target = "nombre")
     @Mapping(source = "fullname", target = "nombreLargo")
     @Mapping(source = "displayname", target = "nombreVisible")
     Curso fromDto(CursoMoodleDTO dto);
 
-    @Mapping(source = "shortname", target = "nombreCorto")
+    @Mapping(source = "shortname", target = "nombre")
     @Mapping(source = "fullname", target = "nombreLargo")
     @Mapping(source = "displayname", target = "nombreVisible")
     void updateFromDto(CursoMoodleDTO dto, @MappingTarget Curso curso);

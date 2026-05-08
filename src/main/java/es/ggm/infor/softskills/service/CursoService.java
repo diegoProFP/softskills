@@ -142,7 +142,7 @@ public class CursoService implements ICursoService {
         }
 
         rellenarTotalesPorSkill(curso);
-        curso.getAlumnos().sort(comparadorAlumnosPorApellido());
+        curso.getAlumnos().sort(comparadorAlumnosPorApellido(dtoMap));
         return curso;
     }
 
@@ -202,15 +202,31 @@ public class CursoService implements ICursoService {
         }
     }
 
-    private Comparator<Alumno> comparadorAlumnosPorApellido() {
+    private Comparator<Alumno> comparadorAlumnosPorApellido(Map<Long, AlumnoMoodleDTO> alumnosMoodlePorId) {
         Collator collator = Collator.getInstance(new Locale("es", "ES"));
         collator.setStrength(Collator.PRIMARY);
 
         Comparator<String> comparadorTexto = Comparator.nullsLast(collator::compare);
         return Comparator
-                .comparing((Alumno alumno) -> normalizarOrdenacion(alumno.getApellidos()), comparadorTexto)
-                .thenComparing(alumno -> normalizarOrdenacion(alumno.getNombre()), comparadorTexto)
-                .thenComparing(alumno -> normalizarOrdenacion(alumno.getNombreCompleto()), comparadorTexto);
+                .comparing((Alumno alumno) -> valorOrdenacion(alumno, alumnosMoodlePorId, CampoOrdenacion.APELLIDOS), comparadorTexto)
+                .thenComparing(alumno -> valorOrdenacion(alumno, alumnosMoodlePorId, CampoOrdenacion.NOMBRE), comparadorTexto)
+                .thenComparing(alumno -> valorOrdenacion(alumno, alumnosMoodlePorId, CampoOrdenacion.NOMBRE_COMPLETO), comparadorTexto);
+    }
+
+    private String valorOrdenacion(Alumno alumno, Map<Long, AlumnoMoodleDTO> alumnosMoodlePorId, CampoOrdenacion campo) {
+        AlumnoMoodleDTO alumnoMoodle = alumnosMoodlePorId.get(alumno.getId());
+
+        return switch (campo) {
+            case APELLIDOS -> normalizarOrdenacion(
+                    alumnoMoodle != null && alumnoMoodle.lastname != null ? alumnoMoodle.lastname : alumno.getApellidos()
+            );
+            case NOMBRE -> normalizarOrdenacion(
+                    alumnoMoodle != null && alumnoMoodle.firstname != null ? alumnoMoodle.firstname : alumno.getNombre()
+            );
+            case NOMBRE_COMPLETO -> normalizarOrdenacion(
+                    alumnoMoodle != null && alumnoMoodle.fullname != null ? alumnoMoodle.fullname : alumno.getNombreCompleto()
+            );
+        };
     }
 
     private String normalizarOrdenacion(String valor) {
@@ -218,5 +234,11 @@ public class CursoService implements ICursoService {
             return null;
         }
         return valor.trim();
+    }
+
+    private enum CampoOrdenacion {
+        APELLIDOS,
+        NOMBRE,
+        NOMBRE_COMPLETO
     }
 }

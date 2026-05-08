@@ -45,8 +45,8 @@ public class Curso {
     )
     private List<SoftSkill> softSkills = new ArrayList<>();
 
-    @Transient
-    private String nombreCorto;
+    @Column(name = "NOMBRE")
+    private String nombre;
 
     @Transient
     private String nombreLargo;
@@ -107,12 +107,12 @@ public class Curso {
         this.softSkills = softSkills;
     }
 
-    public String getNombreCorto() {
-        return nombreCorto;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreCorto(String nombreCorto) {
-        this.nombreCorto = nombreCorto;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getNombreLargo() {

@@ -283,7 +283,7 @@ public class AlumnoDetalleService {
             MuestrasPorCursoDTO cursoDto = muestrasPorCurso.computeIfAbsent(cursoId, ignored -> {
                 MuestrasPorCursoDTO nuevo = new MuestrasPorCursoDTO();
                 nuevo.setCursoId(cursoId);
-                nuevo.setCursoNombre(null);
+                nuevo.setCursoNombre(curso != null ? curso.getNombre() : null);
                 nuevo.setNumMuestras(0L);
                 return nuevo;
             });
