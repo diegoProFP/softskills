@@ -17,6 +17,7 @@ public class LoginResponse {
     List<String> roles;
     boolean exito;
     String mensaje;
+    String codigoError;
 
 
 }

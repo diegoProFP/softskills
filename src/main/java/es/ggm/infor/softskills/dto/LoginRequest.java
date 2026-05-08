@@ -25,7 +25,7 @@ public class LoginRequest {
     public String toString() {
         return "LoginRequest{" +
                 "username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", password='[PROTEGIDA]'" +
                 '}';
     }
 }

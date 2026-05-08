@@ -8,6 +8,7 @@ import es.ggm.infor.softskills.model.Profesor;
 import es.ggm.infor.softskills.service.ProfesorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,8 +42,8 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        MoodleLoginResponse loginResponse = null;
-            UsuarioMoodleDTO userInfo;
+        MoodleLoginResponse loginResponse;
+        UsuarioMoodleDTO userInfo;
         try {
             if(this.loginManual){
                 // Si el login es manual, se devuelve el token manual
@@ -53,10 +54,11 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
                 loginResponse = moodleClient.login(username, password);
             }
 
-            userInfo = moodleClient.getUserInfo(loginResponse.token);
-            if (loginResponse.token == null) {
-                throw new BadCredentialsException("Credenciales incorrectas en Moodle: " + username + ", " + password);
+            if (loginResponse == null || loginResponse.token == null) {
+                throw new BadCredentialsException("Credenciales incorrectas en Moodle");
             }
+
+            userInfo = moodleClient.getUserInfo(loginResponse.token);
 
             // Consultar si el userId existe en la base de datos como profesor
             Profesor profesor = profesorService.getProfesorById(userInfo.getUserid());
@@ -76,7 +78,7 @@ public class MoodleAuthenticationProvider implements AuthenticationProvider {
 
             return tokenAuth;
         } catch (GeneralMoodleException e) {
-            throw new RuntimeException(e);
+            throw new AuthenticationServiceException("Error al comunicarse con Moodle", e);
         }
 
 
