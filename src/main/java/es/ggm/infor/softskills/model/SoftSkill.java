@@ -3,6 +3,8 @@ package es.ggm.infor.softskills.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
@@ -30,7 +32,8 @@ public class SoftSkill {
     private CodigoSoftSkill codigo = CodigoSoftSkill.GENERICA;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "TIPO_MEDICION")
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "TIPO_MEDICION", length = 50)
     @Builder.Default
     private TipoMedicionSoftSkill tipoMedicion = TipoMedicionSoftSkill.PENALIZACION_POR_TRAMOS;
 

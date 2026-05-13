@@ -54,6 +54,7 @@ class SoftSkillServiceTest {
                 curso.getId(),
                 alumno.getId(),
                 softSkill.getId(),
+                null,
                 -1,
                 NivelMuestraSoftSkill.NORMAL,
                 "  Interrumpe al equipo  "
@@ -70,6 +71,59 @@ class SoftSkillServiceTest {
         verify(muestraRepository).save(captor.capture());
         verify(softSkillTotalService).aplicarNuevaMuestra(captor.getValue());
         assertEquals("Interrumpe al equipo", captor.getValue().getMotivo());
+    }
+
+    @Test
+    void insertarMuestraUsaDefaultsDelMotivoSeleccionado() {
+        SoftSkillRepository softSkillRepository = mock(SoftSkillRepository.class);
+        CursoRepository cursoRepository = mock(CursoRepository.class);
+        IAlumnoService alumnoService = mock(IAlumnoService.class);
+        MuestraSoftSkillRepository muestraRepository = mock(MuestraSoftSkillRepository.class);
+        SoftSkillTotalService softSkillTotalService = mock(SoftSkillTotalService.class);
+        MotivosSoftSkillRepository motivosSoftSkillRepository = mock(MotivosSoftSkillRepository.class);
+        SoftSkillService service = new SoftSkillService(
+                softSkillRepository,
+                cursoRepository,
+                alumnoService,
+                muestraRepository,
+                softSkillTotalService,
+                motivosSoftSkillRepository
+        );
+
+        Alumno alumno = Alumno.builder().id(10L).build();
+        Curso curso = Curso.builder().id(20L).alumnos(List.of(alumno)).build();
+        SoftSkill softSkill = SoftSkill.builder().id(30L).build();
+        MotivosSoftSkill motivo = MotivosSoftSkill.builder()
+                .id(50L)
+                .motivo("Bloqueo pasivo prolongado")
+                .valorPorDefecto(-1)
+                .nivelPorDefecto(NivelMuestraSoftSkill.NORMAL)
+                .softSkill(softSkill)
+                .build();
+        MuestraRequest request = new MuestraRequest(
+                40L,
+                curso.getId(),
+                alumno.getId(),
+                softSkill.getId(),
+                motivo.getId(),
+                0,
+                null,
+                null
+        );
+
+        when(cursoRepository.findById(curso.getId())).thenReturn(Optional.of(curso));
+        when(alumnoService.getAlumnoById(alumno.getId())).thenReturn(alumno);
+        when(softSkillRepository.findById(softSkill.getId())).thenReturn(Optional.of(softSkill));
+        when(motivosSoftSkillRepository.findById(motivo.getId())).thenReturn(Optional.of(motivo));
+        when(muestraRepository.save(any(MuestraSoftSkill.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        service.insertarMuestra(request);
+
+        ArgumentCaptor<MuestraSoftSkill> captor = ArgumentCaptor.forClass(MuestraSoftSkill.class);
+        verify(muestraRepository).save(captor.capture());
+        assertEquals("Bloqueo pasivo prolongado", captor.getValue().getMotivo());
+        assertEquals(-1, captor.getValue().getValor());
+        assertEquals(NivelMuestraSoftSkill.NORMAL, captor.getValue().getNivel());
     }
 
     @Test
@@ -111,7 +165,13 @@ class SoftSkillServiceTest {
                 .codigo(CodigoSoftSkill.PARTICIPACION)
                 .listaMotivos(List.of(
                         MotivoSoftSkillDTO.builder().id(1L).motivo("  Ayuda al equipo  ").build(),
-                        MotivoSoftSkillDTO.builder().motivo("Propone soluciones").build()
+                        MotivoSoftSkillDTO.builder()
+                                .motivo("Propone soluciones")
+                                .descripcionCorta("Propone")
+                                .descripcionLarga("Propone soluciones utiles para avanzar.")
+                                .valorPorDefecto(1)
+                                .nivelPorDefecto(NivelMuestraSoftSkill.NORMAL)
+                                .build()
                 ))
                 .build();
 
@@ -130,6 +190,10 @@ class SoftSkillServiceTest {
         assertEquals("Ayuda al equipo", resultado.getListaMotivos().get(0).getMotivo());
         assertEquals(3L, resultado.getListaMotivos().get(1).getId());
         assertEquals("Propone soluciones", resultado.getListaMotivos().get(1).getMotivo());
+        assertEquals("Propone", resultado.getListaMotivos().get(1).getDescripcionCorta());
+        assertEquals("Propone soluciones utiles para avanzar.", resultado.getListaMotivos().get(1).getDescripcionLarga());
+        assertEquals(1, resultado.getListaMotivos().get(1).getValorPorDefecto());
+        assertEquals(NivelMuestraSoftSkill.NORMAL, resultado.getListaMotivos().get(1).getNivelPorDefecto());
         verify(softSkillRepository).save(softSkill);
     }
 }

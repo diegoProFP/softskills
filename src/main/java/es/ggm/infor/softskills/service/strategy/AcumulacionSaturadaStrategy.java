@@ -9,6 +9,39 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Estrategia de medicion basada en acumulacion de evidencias positivas con
+ * rendimientos decrecientes. La puntuacion parte de 0 y aumenta cuando se
+ * registran muestras positivas. Cada evidencia suma una cantidad a la evidencia
+ * acumulada y esa evidencia se transforma despues en una puntuacion entre 0 y 10
+ * mediante una funcion de saturacion.
+ *
+ * Esta logica es adecuada para soft skills que no deben darse por supuestas y
+ * que representan aportaciones visibles por encima del minimo esperado. Encaja
+ * bien con participacion, iniciativa, proactividad, ayuda al grupo, propuestas
+ * de mejora o contribuciones que aportan valor adicional. Un alumno que no
+ * genera evidencias en estas competencias no queda penalizado por una incidencia
+ * concreta, simplemente no acumula meritos en esa dimension.
+ *
+ * Las muestras positivas incrementan la evidencia acumulada usando el peso del
+ * nivel de la muestra. Si la muestra trae un peso explicito, se respeta ese peso;
+ * si no, se usa el peso asociado al nivel: leve, normal o significativa. Las
+ * muestras negativas no reducen la evidencia acumulada ni la puntuacion, aunque
+ * si incrementan el contador de incidencias. Esto permite conservar informacion
+ * sobre observaciones negativas sin convertir esta estrategia en un modelo de
+ * penalizacion.
+ *
+ * La funcion de saturacion evita que la puntuacion crezca de forma lineal e
+ * indefinida. Las primeras evidencias tienen un impacto claro, pero cada nueva
+ * evidencia aporta proporcionalmente menos cuanto mas alta es la puntuacion. Esto
+ * impide que una skill acumulativa se dispare demasiado rapido y refleja mejor
+ * la idea pedagogica de progreso: pasar de 0 a 5 requiere pocas evidencias
+ * fuertes, pero acercarse a 10 exige consistencia repetida.
+ *
+ * Resumen: esta estrategia sirve para premiar evidencias positivas acumuladas en
+ * competencias de aportacion o iniciativa, haciendo que el progreso sea rapido
+ * al principio y mas exigente conforme el alumno se acerca a la excelencia.
+ */
 @Component
 public class AcumulacionSaturadaStrategy implements SoftSkillTotalStrategy {
 

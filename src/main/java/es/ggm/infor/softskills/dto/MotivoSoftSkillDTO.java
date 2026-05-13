@@ -1,6 +1,7 @@
 package es.ggm.infor.softskills.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import es.ggm.infor.softskills.model.NivelMuestraSoftSkill;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,12 @@ public class MotivoSoftSkillDTO {
 
     @NotBlank(message = "El motivo es obligatorio.")
     private String motivo;
+
+    private String descripcionCorta;
+
+    private String descripcionLarga;
+
+    private Integer valorPorDefecto;
+
+    private NivelMuestraSoftSkill nivelPorDefecto;
 }
