@@ -27,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
@@ -69,6 +71,8 @@ public class SoftSkillService implements ISoftSkillService {
         SoftSkill softSkill = softSkillRepository.findById(request.getSoftSkillId())
                 .orElseThrow(() -> new IllegalArgumentException("SoftSkill no encontrada: " + request.getSoftSkillId()));
 
+        Optional<MotivosSoftSkill> motivoSeleccionado = resolverMotivoSeleccionado(request, softSkill);
+
         boolean pertenece = curso.getAlumnos().stream().anyMatch(a -> a.getId().equals(alumno.getId()));
         if (!pertenece) {
             log.warn("El alumno {} no pertenece al curso {}", alumno.getId(), curso.getId());
@@ -76,25 +80,68 @@ public class SoftSkillService implements ISoftSkillService {
         }
 
         Profesor profesor = Profesor.builder().id(request.getProfesorId()).build();
-        NivelMuestraSoftSkill nivel = request.getNivel() != null
-                ? request.getNivel()
-                : NivelMuestraSoftSkill.NORMAL;
+        NivelMuestraSoftSkill nivel = resolverNivel(request, motivoSeleccionado);
+        int valor = resolverValor(request, motivoSeleccionado);
+        validarValor(valor);
 
         MuestraSoftSkill muestra = MuestraSoftSkill.builder()
                 .curso(curso)
                 .alumno(alumno)
                 .profesor(profesor)
                 .softSkill(softSkill)
-                .valor(request.getValor())
+                .valor(valor)
                 .nivel(nivel)
                 .pesoNivel(nivel.getPeso())
-                .motivo(normalizarMotivo(request.getMotivo()))
+                .motivo(resolverTextoMotivo(request, motivoSeleccionado))
                 .fecha(LocalDateTime.now())
                 .build();
 
         muestraRepository.save(muestra);
         softSkillTotalService.aplicarNuevaMuestra(muestra);
         log.info("Muestra registrada con exito: {}", muestra);
+    }
+
+    private Optional<MotivosSoftSkill> resolverMotivoSeleccionado(MuestraRequest request, SoftSkill softSkill) {
+        if (request.getMotivoId() == null) {
+            return Optional.empty();
+        }
+
+        MotivosSoftSkill motivo = motivosSoftSkillRepository.findById(request.getMotivoId())
+                .orElseThrow(() -> new IllegalArgumentException("Motivo no encontrado: " + request.getMotivoId()));
+        if (motivo.getSoftSkill() == null || !Objects.equals(motivo.getSoftSkill().getId(), softSkill.getId())) {
+            throw new IllegalArgumentException("El motivo " + request.getMotivoId()
+                    + " no pertenece a la soft skill " + softSkill.getId() + ".");
+        }
+        return Optional.of(motivo);
+    }
+
+    private NivelMuestraSoftSkill resolverNivel(MuestraRequest request, Optional<MotivosSoftSkill> motivoSeleccionado) {
+        return motivoSeleccionado
+                .map(MotivosSoftSkill::getNivelPorDefecto)
+                .orElse(request.getNivel() != null ? request.getNivel() : NivelMuestraSoftSkill.NORMAL);
+    }
+
+    private int resolverValor(MuestraRequest request, Optional<MotivosSoftSkill> motivoSeleccionado) {
+        return motivoSeleccionado
+                .map(MotivosSoftSkill::getValorPorDefecto)
+                .orElse(request.getValor());
+    }
+
+    private void validarValor(int valor) {
+        if (valor != 1 && valor != -1) {
+            throw new IllegalArgumentException("El valor de la muestra debe ser 1 o -1.");
+        }
+    }
+
+    private String resolverTextoMotivo(MuestraRequest request, Optional<MotivosSoftSkill> motivoSeleccionado) {
+        String motivoLibre = normalizarMotivo(request.getMotivo());
+        if (motivoLibre != null) {
+            return motivoLibre;
+        }
+        return motivoSeleccionado
+                .map(MotivosSoftSkill::getMotivo)
+                .map(this::normalizarMotivo)
+                .orElse(null);
     }
 
     @Override
@@ -155,6 +202,10 @@ public class SoftSkillService implements ISoftSkillService {
 
                 MotivosSoftSkill motivo = resolverMotivo(softSkill, motivosPorId, motivoRequest);
                 motivo.setMotivo(textoMotivo);
+                motivo.setDescripcionCorta(normalizarTexto(motivoRequest.getDescripcionCorta()));
+                motivo.setDescripcionLarga(normalizarTexto(motivoRequest.getDescripcionLarga()));
+                motivo.setValorPorDefecto(motivoRequest.getValorPorDefecto());
+                motivo.setNivelPorDefecto(motivoRequest.getNivelPorDefecto());
                 motivo.setSoftSkill(softSkill);
                 if (motivo.getId() == null) {
                     motivo.setId(siguienteId.getAndIncrement());

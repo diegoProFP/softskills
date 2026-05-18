@@ -126,6 +126,10 @@ public class SoftSkillsController {
                 .map(motivo -> MotivoSoftSkillDTO.builder()
                         .id(motivo.getId())
                         .motivo(motivo.getMotivo())
+                        .descripcionCorta(motivo.getDescripcionCorta())
+                        .descripcionLarga(motivo.getDescripcionLarga())
+                        .valorPorDefecto(motivo.getValorPorDefecto())
+                        .nivelPorDefecto(motivo.getNivelPorDefecto())
                         .build())
                 .toList();
     }

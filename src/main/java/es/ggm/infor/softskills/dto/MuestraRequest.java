@@ -14,6 +14,7 @@ public class MuestraRequest {
     private Long cursoId;
     private Long alumnoId;
     private Long softSkillId;
+    private Long motivoId;
     private int valor; // 1 o -1
     private NivelMuestraSoftSkill nivel;
     @JsonAlias("motivoComentario")
