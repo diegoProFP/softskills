@@ -49,6 +49,13 @@ public class MuestraSoftSkill {
     @Column(name = "PESO_NIVEL")
     private BigDecimal pesoNivel;
 
+    @ManyToOne
+    @JoinColumn(name = "MOTIVO_ID")
+    private MotivosSoftSkill motivoPredefinido;
+
     @Column(name = "MOTIVO", length = 500)
     private String motivo;
+
+    @Column(name = "MOTIVO_COMENTARIO", length = 1000)
+    private String motivoComentario;
 }

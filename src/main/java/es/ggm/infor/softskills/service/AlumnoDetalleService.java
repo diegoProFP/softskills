@@ -302,8 +302,12 @@ public class AlumnoDetalleService {
         dto.setValor(muestra.getValor());
         dto.setNivel(muestra.getNivel() != null ? muestra.getNivel().name() : null);
         dto.setPesoNivel(muestra.getPesoNivel());
+        dto.setMotivoId(muestra.getMotivoPredefinido() != null ? muestra.getMotivoPredefinido().getId() : null);
         dto.setMotivo(muestra.getMotivo());
+        dto.setMotivoComentario(muestra.getMotivoComentario());
         dto.setProfesorId(muestra.getProfesor() != null ? muestra.getProfesor().getId() : null);
+        dto.setEditable(false);
+        dto.setDeletable(false);
         return dto;
     }
 }
