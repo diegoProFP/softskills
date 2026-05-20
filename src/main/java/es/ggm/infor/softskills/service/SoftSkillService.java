@@ -5,8 +5,14 @@ import es.ggm.infor.softskills.dao.MuestraSoftSkillRepository;
 import es.ggm.infor.softskills.dao.MotivosSoftSkillRepository;
 import es.ggm.infor.softskills.dao.SoftSkillRepository;
 import es.ggm.infor.softskills.dto.AdminSoftSkillRequest;
+import es.ggm.infor.softskills.dto.BorrarMuestraResponse;
+import es.ggm.infor.softskills.dto.MuestraOperacionResponse;
 import es.ggm.infor.softskills.dto.MotivoSoftSkillDTO;
 import es.ggm.infor.softskills.dto.MuestraRequest;
+import es.ggm.infor.softskills.dto.MuestraSoftSkillDetalleDTO;
+import es.ggm.infor.softskills.dto.MuestrasCursoAlumnoSoftSkillDTO;
+import es.ggm.infor.softskills.dto.SoftSkillResumenDTO;
+import es.ggm.infor.softskills.dto.TotalActualizadoDTO;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.MuestraSoftSkill;
@@ -14,11 +20,13 @@ import es.ggm.infor.softskills.model.MotivosSoftSkill;
 import es.ggm.infor.softskills.model.NivelMuestraSoftSkill;
 import es.ggm.infor.softskills.model.Profesor;
 import es.ggm.infor.softskills.model.SoftSkill;
+import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumnoCurso;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -92,13 +100,97 @@ public class SoftSkillService implements ISoftSkillService {
                 .valor(valor)
                 .nivel(nivel)
                 .pesoNivel(nivel.getPeso())
+                .motivoPredefinido(motivoSeleccionado.orElse(null))
                 .motivo(resolverTextoMotivo(request, motivoSeleccionado))
+                .motivoComentario(normalizarTexto(request.getMotivoComentario()))
                 .fecha(LocalDateTime.now())
                 .build();
 
         muestraRepository.save(muestra);
         softSkillTotalService.aplicarNuevaMuestra(muestra);
         log.info("Muestra registrada con exito: {}", muestra);
+    }
+
+    @Override
+    public MuestrasCursoAlumnoSoftSkillDTO obtenerMuestrasPorCursoAlumnoSoftSkill(Long cursoId,
+                                                                                  Long alumnoId,
+                                                                                  Long softSkillId,
+                                                                                  Long usuarioId,
+                                                                                  boolean isAdmin) {
+        Curso curso = obtenerCursoValidado(cursoId);
+        Alumno alumno = alumnoService.getAlumnoById(alumnoId);
+        SoftSkill softSkill = obtenerSoftSkillValidada(softSkillId);
+        validarAlumnoEnCurso(curso, alumno);
+        validarAccesoCurso(curso, usuarioId, isAdmin);
+
+        List<MuestraSoftSkill> muestras = muestraRepository
+                .findByCurso_IdAndAlumno_IdAndSoftSkill_IdOrderByFechaDesc(cursoId, alumnoId, softSkillId);
+
+        MuestrasCursoAlumnoSoftSkillDTO dto = new MuestrasCursoAlumnoSoftSkillDTO();
+        dto.setCursoId(curso.getId());
+        dto.setCursoNombre(curso.getNombre());
+        dto.setAlumnoId(alumno.getId());
+        dto.setAlumnoNombre(alumno.getNombre());
+        dto.setSoftSkill(construirSoftSkillResumen(softSkill));
+        dto.setNumMuestras((long) muestras.size());
+        dto.setMuestras(muestras.stream()
+                .map(muestra -> construirMuestraDetalle(muestra, usuarioId, isAdmin))
+                .toList());
+        return dto;
+    }
+
+    @Override
+    @Transactional
+    public MuestraOperacionResponse actualizarMuestra(Long muestraId, MuestraRequest request, Long usuarioId, boolean isAdmin) {
+        MuestraSoftSkill muestra = muestraRepository.findById(muestraId)
+                .orElseThrow(() -> new EntityNotFoundException("Muestra no encontrada"));
+
+        validarContextoObligatorio(request);
+        validarContextoMuestra(muestra, request.getCursoId(), request.getAlumnoId(), request.getSoftSkillId());
+        validarPuedeModificar(muestra, usuarioId, isAdmin, "editar");
+
+        Optional<MotivosSoftSkill> motivoSeleccionado = resolverMotivoSeleccionado(request, muestra.getSoftSkill());
+        NivelMuestraSoftSkill nivel = resolverNivel(request, motivoSeleccionado);
+        int valor = resolverValor(request, motivoSeleccionado);
+        validarValor(valor);
+
+        muestra.setValor(valor);
+        muestra.setNivel(nivel);
+        muestra.setPesoNivel(nivel.getPeso());
+        muestra.setMotivoPredefinido(motivoSeleccionado.orElse(null));
+        muestra.setMotivo(resolverTextoMotivo(request, motivoSeleccionado));
+        muestra.setMotivoComentario(normalizarTexto(request.getMotivoComentario()));
+
+        MuestraSoftSkill guardada = muestraRepository.save(muestra);
+        Optional<TotalSoftSkillPorAlumnoCurso> total = softSkillTotalService.recalcularTrasCambio(guardada);
+        return construirOperacionResponse(guardada, total, usuarioId, isAdmin);
+    }
+
+    @Override
+    @Transactional
+    public BorrarMuestraResponse borrarMuestra(Long muestraId, Long cursoId, Long alumnoId, Long softSkillId,
+                                               Long usuarioId, boolean isAdmin) {
+        MuestraSoftSkill muestra = muestraRepository.findById(muestraId)
+                .orElseThrow(() -> new EntityNotFoundException("Muestra no encontrada"));
+
+        validarContextoMuestra(muestra, cursoId, alumnoId, softSkillId);
+        validarPuedeModificar(muestra, usuarioId, isAdmin, "borrar");
+
+        Long cursoBorradoId = muestra.getCurso().getId();
+        Long alumnoBorradoId = muestra.getAlumno().getId();
+        Long softSkillBorradaId = muestra.getSoftSkill().getId();
+
+        muestraRepository.delete(muestra);
+        Optional<TotalSoftSkillPorAlumnoCurso> total = softSkillTotalService.recalcularTrasCambio(muestra);
+
+        BorrarMuestraResponse response = new BorrarMuestraResponse();
+        response.setDeleted(true);
+        response.setMuestraId(muestraId);
+        response.setCursoId(cursoBorradoId);
+        response.setAlumnoId(alumnoBorradoId);
+        response.setSoftSkillId(softSkillBorradaId);
+        response.setTotalActualizado(construirTotalActualizado(alumnoBorradoId, softSkillBorradaId, total));
+        return response;
     }
 
     private Optional<MotivosSoftSkill> resolverMotivoSeleccionado(MuestraRequest request, SoftSkill softSkill) {
@@ -142,6 +234,124 @@ public class SoftSkillService implements ISoftSkillService {
                 .map(MotivosSoftSkill::getMotivo)
                 .map(this::normalizarMotivo)
                 .orElse(null);
+    }
+
+    private Curso obtenerCursoValidado(Long cursoId) {
+        if (cursoId == null) {
+            throw new IllegalArgumentException("El curso es obligatorio.");
+        }
+        return cursoRepository.findById(cursoId)
+                .orElseThrow(() -> new EntityNotFoundException("Curso no encontrado"));
+    }
+
+    private SoftSkill obtenerSoftSkillValidada(Long softSkillId) {
+        if (softSkillId == null) {
+            throw new IllegalArgumentException("La soft skill es obligatoria.");
+        }
+        return softSkillRepository.findById(softSkillId)
+                .orElseThrow(() -> new EntityNotFoundException("Soft skill no encontrada"));
+    }
+
+    private void validarAlumnoEnCurso(Curso curso, Alumno alumno) {
+        boolean pertenece = curso.getAlumnos() != null
+                && curso.getAlumnos().stream().anyMatch(a -> Objects.equals(a.getId(), alumno.getId()));
+        if (!pertenece) {
+            throw new IllegalArgumentException("El alumno no pertenece al curso indicado.");
+        }
+    }
+
+    private void validarAccesoCurso(Curso curso, Long usuarioId, boolean isAdmin) {
+        if (isAdmin) {
+            return;
+        }
+        Long profesorId = curso.getProfesor() != null ? curso.getProfesor().getId() : null;
+        if (!Objects.equals(profesorId, usuarioId)) {
+            throw new AccessDeniedException("No puedes consultar muestras de un curso de otro profesor.");
+        }
+    }
+
+    private void validarPuedeModificar(MuestraSoftSkill muestra, Long usuarioId, boolean isAdmin, String accion) {
+        if (isAdmin) {
+            return;
+        }
+        Long profesorId = muestra.getProfesor() != null ? muestra.getProfesor().getId() : null;
+        if (!Objects.equals(profesorId, usuarioId)) {
+            throw new AccessDeniedException("No puedes " + accion + " una muestra registrada por otro profesor.");
+        }
+    }
+
+    private void validarContextoMuestra(MuestraSoftSkill muestra, Long cursoId, Long alumnoId, Long softSkillId) {
+        if (cursoId != null && !Objects.equals(muestra.getCurso().getId(), cursoId)) {
+            throw new IllegalArgumentException("La muestra no pertenece al curso indicado.");
+        }
+        if (alumnoId != null && !Objects.equals(muestra.getAlumno().getId(), alumnoId)) {
+            throw new IllegalArgumentException("La muestra no pertenece al alumno indicado.");
+        }
+        if (softSkillId != null && !Objects.equals(muestra.getSoftSkill().getId(), softSkillId)) {
+            throw new IllegalArgumentException("La muestra no pertenece a la soft skill indicada.");
+        }
+    }
+
+    private void validarContextoObligatorio(MuestraRequest request) {
+        if (request.getCursoId() == null || request.getAlumnoId() == null || request.getSoftSkillId() == null) {
+            throw new IllegalArgumentException("Curso, alumno y soft skill son obligatorios para modificar una muestra.");
+        }
+    }
+
+    private MuestraOperacionResponse construirOperacionResponse(MuestraSoftSkill muestra,
+                                                                Optional<TotalSoftSkillPorAlumnoCurso> total,
+                                                                Long usuarioId,
+                                                                boolean isAdmin) {
+        MuestraOperacionResponse response = new MuestraOperacionResponse();
+        response.setMuestra(construirMuestraDetalle(muestra, usuarioId, isAdmin));
+        response.setTotalActualizado(construirTotalActualizado(
+                muestra.getAlumno().getId(),
+                muestra.getSoftSkill().getId(),
+                total
+        ));
+        return response;
+    }
+
+    private TotalActualizadoDTO construirTotalActualizado(Long alumnoId,
+                                                          Long softSkillId,
+                                                          Optional<TotalSoftSkillPorAlumnoCurso> total) {
+        TotalActualizadoDTO dto = new TotalActualizadoDTO();
+        dto.setAlumnoId(alumnoId);
+        dto.setSoftSkillId(softSkillId);
+        dto.setPuntuacionTotal(total.map(TotalSoftSkillPorAlumnoCurso::getPuntuacionTotal).orElse(null));
+        dto.setNumMuestras(total.map(TotalSoftSkillPorAlumnoCurso::getNumMuestras).orElse(0L));
+        return dto;
+    }
+
+    private MuestraSoftSkillDetalleDTO construirMuestraDetalle(MuestraSoftSkill muestra, Long usuarioId, boolean isAdmin) {
+        boolean puedeModificar = isAdmin || Objects.equals(
+                muestra.getProfesor() != null ? muestra.getProfesor().getId() : null,
+                usuarioId
+        );
+
+        MuestraSoftSkillDetalleDTO dto = new MuestraSoftSkillDetalleDTO();
+        dto.setId(muestra.getId());
+        dto.setFecha(muestra.getFecha());
+        dto.setValor(muestra.getValor());
+        dto.setNivel(muestra.getNivel() != null ? muestra.getNivel().name() : null);
+        dto.setPesoNivel(muestra.getPesoNivel());
+        dto.setMotivoId(muestra.getMotivoPredefinido() != null ? muestra.getMotivoPredefinido().getId() : null);
+        dto.setMotivo(muestra.getMotivo());
+        dto.setMotivoComentario(muestra.getMotivoComentario());
+        dto.setProfesorId(muestra.getProfesor() != null ? muestra.getProfesor().getId() : null);
+        dto.setEditable(puedeModificar);
+        dto.setDeletable(puedeModificar);
+        return dto;
+    }
+
+    private SoftSkillResumenDTO construirSoftSkillResumen(SoftSkill softSkill) {
+        SoftSkillResumenDTO dto = new SoftSkillResumenDTO();
+        dto.setId(softSkill.getId());
+        dto.setCodigo(softSkill.getCodigo() != null ? softSkill.getCodigo().name() : null);
+        dto.setNombre(softSkill.getNombre());
+        dto.setDescripcion(softSkill.getDescripcion());
+        dto.setTipoMedicion(softSkill.getTipoMedicion() != null ? softSkill.getTipoMedicion().name() : null);
+        return dto;
     }
 
     @Override

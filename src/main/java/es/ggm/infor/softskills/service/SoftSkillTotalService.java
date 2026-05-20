@@ -3,6 +3,7 @@ package es.ggm.infor.softskills.service;
 import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoCursoRepository;
 import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoGrupoRepository;
 import es.ggm.infor.softskills.dao.TotalSoftSkillRepository;
+import es.ggm.infor.softskills.dao.MuestraSoftSkillRepository;
 import es.ggm.infor.softskills.model.Alumno;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Grupo;
@@ -39,6 +40,7 @@ public class SoftSkillTotalService {
     private final TotalSoftSkillPorAlumnoGrupoRepository totalSoftSkillPorAlumnoGrupoRepository;
     private final SoftSkillTotalStrategyResolver strategyResolver;
     private final GrupoService grupoService;
+    private final MuestraSoftSkillRepository muestraSoftSkillRepository;
 
     @Transactional
     public void aplicarNuevaMuestra(MuestraSoftSkill muestra) {
@@ -55,6 +57,57 @@ public class SoftSkillTotalService {
         }
 
         actualizarTotalGlobal(alumno, softSkill, grupo != null);
+    }
+
+    @Transactional
+    public Optional<TotalSoftSkillPorAlumnoCurso> recalcularTrasCambio(MuestraSoftSkill muestraReferencia) {
+        Alumno alumno = muestraReferencia.getAlumno();
+        Curso curso = muestraReferencia.getCurso();
+        SoftSkill softSkill = muestraReferencia.getSoftSkill();
+        SoftSkillTotalStrategy strategy = strategyResolver.resolve(softSkill);
+        Grupo grupo = grupoService.resolverGrupoDesdeCurso(curso);
+
+        Optional<TotalSoftSkillPorAlumnoCurso> totalCurso = recalcularTotalPorCurso(alumno, curso, softSkill, strategy);
+
+        if (grupo != null) {
+            actualizarTotalPorGrupo(alumno, grupo, softSkill);
+        }
+
+        actualizarTotalGlobal(alumno, softSkill, grupo != null);
+        return totalCurso;
+    }
+
+    private Optional<TotalSoftSkillPorAlumnoCurso> recalcularTotalPorCurso(Alumno alumno,
+                                                                           Curso curso,
+                                                                           SoftSkill softSkill,
+                                                                           SoftSkillTotalStrategy strategy) {
+        List<MuestraSoftSkill> muestras = muestraSoftSkillRepository
+                .findByCurso_IdAndAlumno_IdAndSoftSkill_IdOrderByFechaAscIdAsc(curso.getId(), alumno.getId(), softSkill.getId());
+
+        Optional<TotalSoftSkillPorAlumnoCurso> totalExistente = totalSoftSkillPorAlumnoCursoRepository
+                .findByAlumnoAndCursoAndSoftSkill(alumno, curso, softSkill);
+
+        if (muestras.isEmpty()) {
+            totalExistente.ifPresent(totalSoftSkillPorAlumnoCursoRepository::delete);
+            return Optional.empty();
+        }
+
+        TotalSoftSkillPorAlumnoCurso total = totalExistente.orElseGet(() -> TotalSoftSkillPorAlumnoCurso.builder()
+                .alumno(alumno)
+                .curso(curso)
+                .softSkill(softSkill)
+                .build());
+
+        total.setPuntuacionTotal(null);
+        total.setNumMuestras(null);
+        total.setNumIncidencias(null);
+        total.setEvidenciaAcumulada(null);
+
+        for (MuestraSoftSkill muestra : muestras) {
+            strategy.aplicarAlta(total, muestra);
+        }
+
+        return Optional.of(totalSoftSkillPorAlumnoCursoRepository.save(total));
     }
 
     private void actualizarTotalPorCurso(Alumno alumno, Curso curso, SoftSkill softSkill,
@@ -76,12 +129,13 @@ public class SoftSkillTotalService {
         List<TotalSoftSkillPorAlumnoCurso> totalesPorCursoDelGrupo = totalSoftSkillPorAlumnoCursoRepository
                 .findByAlumnoAndCurso_GrupoAcademicoAndSoftSkill(alumno, grupo, softSkill);
 
-        if (totalesPorCursoDelGrupo.isEmpty()) {
-            return;
-        }
-
         Optional<TotalSoftSkillPorAlumnoGrupo> totalExistente = totalSoftSkillPorAlumnoGrupoRepository
                 .findByAlumnoAndGrupoAndSoftSkill(alumno, grupo, softSkill);
+
+        if (totalesPorCursoDelGrupo.isEmpty()) {
+            totalExistente.ifPresent(totalSoftSkillPorAlumnoGrupoRepository::delete);
+            return;
+        }
 
         TotalSoftSkillPorAlumnoGrupo total = totalExistente.orElseGet(() -> TotalSoftSkillPorAlumnoGrupo.builder()
                 .alumno(alumno)
@@ -98,11 +152,12 @@ public class SoftSkillTotalService {
                 ? totalSoftSkillPorAlumnoGrupoRepository.findByAlumnoAndSoftSkill(alumno, softSkill)
                 : totalSoftSkillPorAlumnoCursoRepository.findByAlumnoAndSoftSkill(alumno, softSkill);
 
+        Optional<TotalSoftSkillPorAlumno> totalExistente = totalSoftSkillRepository.findByAlumnoAndSoftSkill(alumno, softSkill);
+
         if (totalesFuente.isEmpty()) {
+            totalExistente.ifPresent(totalSoftSkillRepository::delete);
             return;
         }
-
-        Optional<TotalSoftSkillPorAlumno> totalExistente = totalSoftSkillRepository.findByAlumnoAndSoftSkill(alumno, softSkill);
 
         TotalSoftSkillPorAlumno total = totalExistente.orElseGet(() -> TotalSoftSkillPorAlumno.builder()
                 .alumno(alumno)

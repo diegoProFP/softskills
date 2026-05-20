@@ -9,8 +9,12 @@ public class MuestraSoftSkillDetalleDTO {
     private Integer valor;
     private String nivel;
     private BigDecimal pesoNivel;
+    private Long motivoId;
     private String motivo;
+    private String motivoComentario;
     private Long profesorId;
+    private Boolean editable;
+    private Boolean deletable;
 
     public Long getId() {
         return id;
@@ -60,11 +64,43 @@ public class MuestraSoftSkillDetalleDTO {
         this.motivo = motivo;
     }
 
+    public Long getMotivoId() {
+        return motivoId;
+    }
+
+    public void setMotivoId(Long motivoId) {
+        this.motivoId = motivoId;
+    }
+
+    public String getMotivoComentario() {
+        return motivoComentario;
+    }
+
+    public void setMotivoComentario(String motivoComentario) {
+        this.motivoComentario = motivoComentario;
+    }
+
     public Long getProfesorId() {
         return profesorId;
     }
 
     public void setProfesorId(Long profesorId) {
         this.profesorId = profesorId;
+    }
+
+    public Boolean getEditable() {
+        return editable;
+    }
+
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
+    }
+
+    public Boolean getDeletable() {
+        return deletable;
+    }
+
+    public void setDeletable(Boolean deletable) {
+        this.deletable = deletable;
     }
 }

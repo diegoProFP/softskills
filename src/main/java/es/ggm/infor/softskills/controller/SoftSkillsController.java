@@ -2,6 +2,7 @@ package es.ggm.infor.softskills.controller;
 
 import es.ggm.infor.moodleintegration.dto.UsuarioMoodleDTO;
 import es.ggm.infor.softskills.dto.AdminSoftSkillRequest;
+import es.ggm.infor.softskills.dto.ErrorResponse;
 import es.ggm.infor.softskills.dto.AdminSoftSkillResponse;
 import es.ggm.infor.softskills.dto.MotivoSoftSkillDTO;
 import es.ggm.infor.softskills.dto.MuestraRequest;
@@ -14,15 +15,21 @@ import es.ggm.infor.softskills.model.TipoMedicionSoftSkill;
 import es.ggm.infor.softskills.security.AuthenticatedUserService;
 import es.ggm.infor.softskills.service.ISoftSkillService;
 import jakarta.validation.Valid;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -103,6 +110,60 @@ public class SoftSkillsController {
             return ResponseEntity.internalServerError().body(respuesta);
 
         }
+    }
+
+    @PutMapping("/muestra/{muestraId}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    public ResponseEntity<?> actualizarMuestra(@PathVariable Long muestraId,
+                                               @RequestBody MuestraRequest request,
+                                               Authentication authentication) {
+        try {
+            UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
+            request.setProfesorId(usuario.getUserid());
+            return ResponseEntity.ok(softSkillService.actualizarMuestra(
+                    muestraId,
+                    request,
+                    usuario.getUserid(),
+                    isAdmin(authentication)
+            ));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/muestra/{muestraId}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    public ResponseEntity<?> borrarMuestra(@PathVariable Long muestraId,
+                                           @RequestParam(required = false) Long cursoId,
+                                           @RequestParam(required = false) Long alumnoId,
+                                           @RequestParam(required = false) Long softSkillId,
+                                           Authentication authentication) {
+        try {
+            UsuarioMoodleDTO usuario = authenticatedUserService.getAuthenticatedUser();
+            return ResponseEntity.ok(softSkillService.borrarMuestra(
+                    muestraId,
+                    cursoId,
+                    alumnoId,
+                    softSkillId,
+                    usuario.getUserid(),
+                    isAdmin(authentication)
+            ));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(e.getMessage()));
+        } catch (AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority()));
     }
 
     private AdminSoftSkillResponse toAdminResponse(SoftSkill softSkill) {

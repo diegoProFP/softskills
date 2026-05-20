@@ -1,6 +1,5 @@
 package es.ggm.infor.softskills.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import es.ggm.infor.softskills.model.NivelMuestraSoftSkill;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +16,6 @@ public class MuestraRequest {
     private Long motivoId;
     private int valor; // 1 o -1
     private NivelMuestraSoftSkill nivel;
-    @JsonAlias("motivoComentario")
     private String motivo;
+    private String motivoComentario;
 }

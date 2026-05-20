@@ -10,7 +10,12 @@ import java.util.List;
 @Repository
 public interface MuestraSoftSkillRepository extends JpaRepository<MuestraSoftSkill, Long> {
 
-    @EntityGraph(attributePaths = {"curso", "profesor", "softSkill", "alumno"})
+    @EntityGraph(attributePaths = {"curso", "profesor", "softSkill", "alumno", "motivoPredefinido"})
     List<MuestraSoftSkill> findByAlumno_IdAndSoftSkill_IdOrderByFechaDesc(Long alumnoId, Long softSkillId);
-}
 
+    @EntityGraph(attributePaths = {"curso", "profesor", "softSkill", "alumno", "motivoPredefinido"})
+    List<MuestraSoftSkill> findByCurso_IdAndAlumno_IdAndSoftSkill_IdOrderByFechaDesc(Long cursoId, Long alumnoId, Long softSkillId);
+
+    @EntityGraph(attributePaths = {"curso", "profesor", "softSkill", "alumno", "motivoPredefinido"})
+    List<MuestraSoftSkill> findByCurso_IdAndAlumno_IdAndSoftSkill_IdOrderByFechaAscIdAsc(Long cursoId, Long alumnoId, Long softSkillId);
+}
