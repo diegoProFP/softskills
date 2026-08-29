@@ -36,4 +36,6 @@ public class Grupo {
 
     @Column(nullable = false)
     private String cursoEscolar;
+
+    private Long cursoMoodleGrupoId;
 }

@@ -8,11 +8,14 @@ import es.ggm.infor.softskills.dao.GrupoRepository;
 import es.ggm.infor.softskills.dao.SoftSkillRepository;
 import es.ggm.infor.softskills.dao.TotalSoftSkillPorAlumnoGrupoRepository;
 import es.ggm.infor.softskills.dto.AlumnoConTotalesDTO;
+import es.ggm.infor.softskills.exception.GrupoMoodleAccessException;
 import es.ggm.infor.softskills.model.Curso;
 import es.ggm.infor.softskills.model.Grupo;
 import es.ggm.infor.softskills.model.SoftSkill;
 import es.ggm.infor.softskills.model.TotalSoftSkillPorAlumnoGrupo;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class GrupoResumenService {
+
+    private static final Logger logger = LoggerFactory.getLogger(GrupoResumenService.class);
 
     private final GrupoRepository grupoRepository;
     private final TotalSoftSkillPorAlumnoGrupoRepository totalSoftSkillPorAlumnoGrupoRepository;
@@ -46,7 +51,7 @@ public class GrupoResumenService {
         Map<Long, Map<Long, java.math.BigDecimal>> puntuacionesPorAlumno = new HashMap<>();
         Map<Long, Map<Long, Long>> muestrasPorAlumno = new HashMap<>();
 
-        Map<Long, AlumnoMoodleDTO> alumnosMoodlePorId = obtenerDatosAlumnosGrupo(token, grupoAcademico.getId());
+        Map<Long, AlumnoMoodleDTO> alumnosMoodlePorId = obtenerDatosAlumnosGrupo(token, grupoAcademico);
         Collection<SoftSkill> softSkillsDelGrupo = obtenerSoftSkillsDelGrupo(grupoAcademico.getId());
 
         for (AlumnoMoodleDTO alumnoMoodle : alumnosMoodlePorId.values()) {
@@ -101,13 +106,36 @@ public class GrupoResumenService {
         return ranking;
     }
 
-    private Map<Long, AlumnoMoodleDTO> obtenerDatosAlumnosGrupo(String token, Long grupoId) throws GeneralMoodleException {
-        Optional<Curso> cursoReferencia = cursoRepository.findFirstByGrupoAcademico_Id(grupoId);
-        if (cursoReferencia.isEmpty()) {
-            return Map.of();
+    private Map<Long, AlumnoMoodleDTO> obtenerDatosAlumnosGrupo(String token, Grupo grupoAcademico) throws GeneralMoodleException {
+        Long cursoMoodleGrupoId = grupoAcademico.getCursoMoodleGrupoId();
+        Long cursoConsultaId = cursoMoodleGrupoId;
+
+        if (cursoConsultaId == null) {
+            Optional<Curso> cursoReferencia = cursoRepository.findFirstByGrupoAcademico_Id(grupoAcademico.getId());
+            if (cursoReferencia.isEmpty()) {
+                return Map.of();
+            }
+            cursoConsultaId = cursoReferencia.get().getId();
+            logger.warn(
+                    "El grupo academico {} no tiene cursoMoodleGrupoId configurado. Se aplica fallback temporal usando el curso {}.",
+                    grupoAcademico.getId(),
+                    cursoConsultaId
+            );
         }
 
-        List<AlumnoMoodleDTO> alumnosMoodle = moodleClient.getAlumnos(token, cursoReferencia.get().getId());
+        List<AlumnoMoodleDTO> alumnosMoodle;
+        try {
+            alumnosMoodle = moodleClient.getAlumnos(token, cursoConsultaId);
+        } catch (GeneralMoodleException e) {
+            logger.error(
+                    "Moodle ha rechazado o fallado al consultar alumnos del grupo academico {} con curso Moodle {}.",
+                    grupoAcademico.getId(),
+                    cursoConsultaId,
+                    e
+            );
+            throw new GrupoMoodleAccessException("No tienes permisos para consultar este grupo academico.", e);
+        }
+
         Map<Long, AlumnoMoodleDTO> alumnosPorId = new LinkedHashMap<>();
         for (AlumnoMoodleDTO alumno : alumnosMoodle) {
             alumnosPorId.put(alumno.id, alumno);

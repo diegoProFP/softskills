@@ -2,6 +2,7 @@ package es.ggm.infor.softskills.controller;
 
 import es.ggm.infor.moodleintegration.exceptions.GeneralMoodleException;
 import es.ggm.infor.softskills.exception.CursoYaRegistradoException;
+import es.ggm.infor.softskills.exception.GrupoMoodleAccessException;
 import es.ggm.infor.softskills.exception.GrupoNoResueltoException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -63,6 +64,12 @@ public class ApiExceptionHandler {
     public ResponseEntity<String> handleAccessDenied(AccessDeniedException e) {
         logger.error("Acceso denegado", e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tiene permisos para realizar esta operación.");
+    }
+
+    @ExceptionHandler(GrupoMoodleAccessException.class)
+    public ResponseEntity<String> handleGrupoMoodleAccess(GrupoMoodleAccessException e) {
+        logger.error("Acceso denegado por Moodle al consultar grupo academico", e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
     @ExceptionHandler(GeneralMoodleException.class)

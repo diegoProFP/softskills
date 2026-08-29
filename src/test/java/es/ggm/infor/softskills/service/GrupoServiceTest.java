@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,5 +63,31 @@ class GrupoServiceTest {
         assertNotNull(resuelto);
         assertTrue(curso.isRegistrableEnSoftSkills());
         verify(grupoRepository).save(any(Grupo.class));
+    }
+
+    @Test
+    void grupoConsultaServiceActualizaCursoMoodleGrupo() {
+        GrupoRepository grupoRepository = mock(GrupoRepository.class);
+        GrupoConsultaService service = new GrupoConsultaService(grupoRepository);
+        Grupo grupo = Grupo.builder()
+                .id(1L)
+                .nivel("1")
+                .cicloFormativo("DAW")
+                .grupo("A")
+                .cursoEscolar("25-26")
+                .build();
+
+        when(grupoRepository.findById(1L)).thenReturn(Optional.of(grupo));
+        when(grupoRepository.save(any(Grupo.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Grupo actualizado = service.actualizarCursoMoodleGrupo(
+                1L,
+                es.ggm.infor.softskills.dto.AdminGrupoAcademicoRequest.builder()
+                        .cursoMoodleGrupoId(99L)
+                        .build()
+        );
+
+        assertEquals(99L, actualizado.getCursoMoodleGrupoId());
+        verify(grupoRepository).save(grupo);
     }
 }
